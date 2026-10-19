@@ -138,7 +138,8 @@ export function App() {
         taskType: response.task_type || mode,
         solver: response.solver,
         processingTimeMs: response.processing_time_ms,
-        tokensConsumed: response.solver_details?.tokens_consumed ?? 0,
+        tokensConsumed: response.token_usage?.total_tokens ?? (response.solver_details?.tokens_consumed ?? 0),
+        tokenUsage: response.token_usage,
         secondaryResults: response.secondary_results,
         solverDetails: response.solver_details,
         rawResponse: response,
@@ -157,7 +158,8 @@ export function App() {
             ? 'Python Deterministic (AST Sandbox)'
             : `${response.solver.toUpperCase()} Engine`,
         durationMs: response.processing_time_ms || 1.4,
-        tokens: response.solver_details?.tokens_consumed ?? 0,
+        tokens: response.token_usage?.total_tokens ?? (response.solver_details?.tokens_consumed ?? 0),
+        tokenUsage: response.token_usage,
         statusCode: response.success ? 200 : 500,
         timestamp: new Date().toISOString(),
         timeAgo: 'Just now',
@@ -274,6 +276,8 @@ export function App() {
               apiLatencyMs={apiLatencyMs}
               onRefreshHealth={refreshHealth}
               onNavigateToSettings={() => setCurrentScreen('settings')}
+              history={history}
+              messages={messages}
             />
           )}
         </main>

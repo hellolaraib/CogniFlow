@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-10-19 18:25:52",
+  "classification_accuracy_pct": 78.26,
+  "math_correctness_pct": 100.0,
+  "retrieval_relevance_pct": 100.0,
+  "code_syntax_validity_pct": 100.0,
+  "code_execution_correctness_pct": 66.67,
+  "total_requests": 23,
+  "average_latency_ms": 288.41,
+  "median_latency_ms": 0.23,
+  "p95_latency_ms": 1682.23,
+  "peak_ram_mb": 55.64,
+  "zero_token_ratio_pct": 78.26,
+  "total_llm_tokens": 907,
+  "input_tokens": 69,
+  "output_tokens": 838,
+  "paid_external_api_calls": 0,
+  "solver_breakdown": {
+    "python": 3,
+    "vector_rag": 8,
+    "lightweight_nlp": 2,
+    "ast_code_analyzer": 2,
+    "code_model": 5,
+    "edge_llm": 1,
+    "smt_solver": 2
+  }
+}

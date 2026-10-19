@@ -124,6 +124,20 @@ export interface SolverDetails {
   [key: string]: any;
 }
 
+export interface TokenUsage {
+  request_id: string;
+  solver: string;
+  model?: string | null;
+  llm_calls: number;
+  input_tokens: number;
+  output_tokens: number;
+  total_tokens: number;
+  token_count_method: 'actual' | 'estimated' | 'not_applicable';
+  processing_time_ms: number;
+  estimated_cost?: number | null;
+  fallback_used: boolean;
+}
+
 export interface SolveResponse {
   success: boolean;
   task_type: string;
@@ -134,6 +148,19 @@ export interface SolveResponse {
   secondary_results?: SecondaryResults;
   solver_details?: SolverDetails;
   memory_rss_mb?: number;
+  token_usage?: TokenUsage;
+}
+
+export interface BatchSolveRequest {
+  tasks: SolveRequest[];
+}
+
+export interface BatchSolveResponse {
+  total_tasks: number;
+  successful_tasks: number;
+  failed_tasks: number;
+  processing_time_ms: number;
+  results: SolveResponse[];
 }
 
 export interface ChatMessage {
@@ -145,6 +172,7 @@ export interface ChatMessage {
   solver?: string;
   processingTimeMs?: number;
   tokensConsumed?: number;
+  tokenUsage?: TokenUsage;
   secondaryResults?: SecondaryResults;
   solverDetails?: SolverDetails;
   rawResponse?: SolveResponse;
@@ -159,6 +187,7 @@ export interface TaskHistoryItem {
   engineName: string;
   durationMs: number;
   tokens: number;
+  tokenUsage?: TokenUsage;
   statusCode: number;
   timestamp: string;
   timeAgo: string;

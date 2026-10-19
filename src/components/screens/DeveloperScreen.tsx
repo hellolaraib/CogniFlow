@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { getApiBaseUrl, setApiBaseUrl, checkBackendHealth, solveTask } from '../../services/api';
-import { SolveResponse } from '../../types/solver';
+import { SolveResponse, TaskHistoryItem, ChatMessage } from '../../types/solver';
 
 interface DeveloperScreenProps {
   apiConnected: boolean;
   apiLatencyMs?: number;
   onRefreshHealth: () => void;
   onNavigateToSettings: () => void;
+  history?: TaskHistoryItem[];
+  messages?: ChatMessage[];
 }
 
 export const DeveloperScreen: React.FC<DeveloperScreenProps> = ({
@@ -14,6 +16,8 @@ export const DeveloperScreen: React.FC<DeveloperScreenProps> = ({
   apiLatencyMs,
   onRefreshHealth,
   onNavigateToSettings,
+  history = [],
+  messages = [],
 }) => {
   const [backendUrl, setBackendUrlInput] = useState(getApiBaseUrl());
   const [testingConnection, setTestingConnection] = useState(false);
@@ -23,6 +27,64 @@ export const DeveloperScreen: React.FC<DeveloperScreenProps> = ({
     latencyMs?: number;
     activeSolvers?: number;
   } | null>(null);
+
+  // Cumulative Session Usage derived from unique requests in history
+  const sessionTokenStats = React.useMemo(() => {
+    const items = history || [];
+    const seenRequestIds = new Set<string>();
+    let totalInputTokens = 0;
+    let totalOutputTokens = 0;
+    let totalLlmTokens = 0;
+    let totalLlmCalls = 0;
+    let zeroLlmRequests = 0;
+    let totalRequests = 0;
+    const solverBreakdown: Record<string, { requests: number; tokens: number; llmCalls: number }> = {};
+
+    for (const item of items) {
+      const reqId = item.tokenUsage?.request_id || item.id;
+      if (seenRequestIds.has(reqId)) continue;
+      seenRequestIds.add(reqId);
+
+      totalRequests++;
+      const tu = item.tokenUsage;
+      const solverKey = item.solver || 'python';
+
+      if (!solverBreakdown[solverKey]) {
+        solverBreakdown[solverKey] = { requests: 0, tokens: 0, llmCalls: 0 };
+      }
+      solverBreakdown[solverKey].requests += 1;
+
+      if (tu) {
+        totalInputTokens += tu.input_tokens;
+        totalOutputTokens += tu.output_tokens;
+        totalLlmTokens += tu.total_tokens;
+        totalLlmCalls += tu.llm_calls;
+        solverBreakdown[solverKey].tokens += tu.total_tokens;
+        solverBreakdown[solverKey].llmCalls += tu.llm_calls;
+        if (tu.total_tokens === 0 && tu.llm_calls === 0) {
+          zeroLlmRequests++;
+        }
+      } else {
+        const consumed = item.tokens || 0;
+        totalLlmTokens += consumed;
+        solverBreakdown[solverKey].tokens += consumed;
+        if (consumed === 0) {
+          zeroLlmRequests++;
+        }
+      }
+    }
+
+    return {
+      totalRequests,
+      totalChatTurns: messages.length,
+      totalInputTokens,
+      totalOutputTokens,
+      totalLlmTokens,
+      totalLlmCalls,
+      zeroLlmRequests,
+      solverBreakdown,
+    };
+  }, [history, messages]);
 
   // Developer Routing Thresholds & Overrides (Stored in local dev config)
   const [routingStrategy, setRoutingStrategy] = useState<'adaptive' | 'deterministic_only' | 'cloud_fallback'>(() => {
@@ -361,6 +423,125 @@ export const DeveloperScreen: React.FC<DeveloperScreenProps> = ({
             {connectionTestResult.message}
           </div>
         )}
+      </div>
+
+      {/* SECTION: Cumulative Session Token Accounting & Live Metrics */}
+      <div className="rounded-2xl p-5 bg-surface-container-low border border-outline-variant/20 space-y-4 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-[20px]">
+              analytics
+            </span>
+            <h2 className="text-base font-semibold text-on-surface font-mono">
+              Cumulative Session Token Accounting
+            </h2>
+          </div>
+          <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/30 border border-emerald-500/30 px-2 py-0.5 rounded">
+            Live Session Telemetry
+          </span>
+        </div>
+
+        <p className="text-xs font-mono text-on-surface-variant">
+          Real-time measurement aggregated across all unique requests in the active session. Zero-LLM deterministic calculations and pattern-matching NLP solvers are recorded faithfully without artificial token inflation.
+        </p>
+
+        {/* 5-Metric Highlights */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 font-mono text-xs">
+          <div className="p-3 rounded-xl bg-surface-container border border-outline-variant/20">
+            <span className="text-[10px] text-on-surface-variant uppercase block">Total LLM Tokens</span>
+            <span className="text-xl font-bold text-primary">{sessionTokenStats.totalLlmTokens}</span>
+          </div>
+
+          <div className="p-3 rounded-xl bg-surface-container border border-outline-variant/20">
+            <span className="text-[10px] text-on-surface-variant uppercase block">Input Tokens</span>
+            <span className="text-xl font-bold text-on-surface">{sessionTokenStats.totalInputTokens}</span>
+          </div>
+
+          <div className="p-3 rounded-xl bg-surface-container border border-outline-variant/20">
+            <span className="text-[10px] text-on-surface-variant uppercase block">Output Tokens</span>
+            <span className="text-xl font-bold text-on-surface">{sessionTokenStats.totalOutputTokens}</span>
+          </div>
+
+          <div className="p-3 rounded-xl bg-surface-container border border-outline-variant/20">
+            <span className="text-[10px] text-on-surface-variant uppercase block">LLM Invocations</span>
+            <span className="text-xl font-bold text-amber-400">{sessionTokenStats.totalLlmCalls}</span>
+          </div>
+
+          <div className="p-3 rounded-xl bg-surface-container border border-outline-variant/20">
+            <span className="text-[10px] text-on-surface-variant uppercase block">Zero-Token Solves</span>
+            <span className="text-xl font-bold text-emerald-400">{sessionTokenStats.zeroLlmRequests}</span>
+          </div>
+        </div>
+
+        {/* Cost & Honesty Alert */}
+        <div className="p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/20 text-xs font-mono space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-on-surface-variant">External Paid API Cost:</span>
+            <span className="text-emerald-400 font-bold">$0.00 (Zero External Paid APIs)</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-on-surface-variant">Zero-Token Dispatch Ratio:</span>
+            <span className="text-primary font-bold">
+              {sessionTokenStats.totalRequests > 0
+                ? `${Math.round((sessionTokenStats.zeroLlmRequests / sessionTokenStats.totalRequests) * 100)}%`
+                : '100%'}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-on-surface-variant">Active Conversation Messages:</span>
+            <span className="text-on-surface font-bold">{sessionTokenStats.totalChatTurns} turns</span>
+          </div>
+          <p className="text-[10px] text-on-surface-variant/70 pt-1 border-t border-outline-variant/15">
+            Note: Zero LLM tokens indicates deterministic AST/SymPy/VADER/Regex processing. It consumes standard CPU/memory resources without language model weight forward passes.
+          </p>
+        </div>
+
+        {/* Solver Breakdown Table */}
+        <div className="space-y-2 pt-1">
+          <span className="text-[11px] font-mono text-on-surface-variant uppercase font-semibold block">
+            Usage Breakdown by Solver Engine
+          </span>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left font-mono text-xs">
+              <thead>
+                <tr className="border-b border-outline-variant/20 text-on-surface-variant/70 text-[10px] uppercase">
+                  <th className="py-2 px-3">Solver</th>
+                  <th className="py-2 px-3">Total Requests</th>
+                  <th className="py-2 px-3">Tokens Used</th>
+                  <th className="py-2 px-3">LLM Calls</th>
+                  <th className="py-2 px-3 text-right">Accounting Method</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-outline-variant/10 text-on-surface">
+                {Object.keys(sessionTokenStats.solverBreakdown).length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-3 px-3 text-center text-on-surface-variant/70">
+                      No requests recorded in current session. Submit tasks in Chat or run Benchmarks to populate metrics.
+                    </td>
+                  </tr>
+                ) : (
+                  Object.entries(sessionTokenStats.solverBreakdown).map(([solver, data]) => (
+                    <tr key={solver} className="hover:bg-surface-container-high/40 transition-colors">
+                      <td className="py-2 px-3 font-semibold text-emerald-300">{solver}</td>
+                      <td className="py-2 px-3 text-on-surface">{data.requests}</td>
+                      <td className="py-2 px-3 text-primary">{data.tokens}</td>
+                      <td className="py-2 px-3 text-on-surface-variant">{data.llmCalls}</td>
+                      <td className="py-2 px-3 text-right">
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] ${
+                          data.tokens === 0
+                            ? 'bg-primary/20 text-primary border border-primary/30'
+                            : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        }`}>
+                          {data.tokens === 0 ? 'Deterministic (0 Tok)' : 'Actual / Estimated'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       {/* SECTION 2: Solver Availability & Kernel Registry */}

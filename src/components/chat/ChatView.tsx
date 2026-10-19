@@ -362,40 +362,50 @@ export const ChatView: React.FC<ChatViewProps> = ({
                         </span>
                         <span>How was this solved?</span>
                       </button>
+
+                      {/* Real-time token badge */}
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-container/80 border border-outline-variant/20 text-on-surface-variant flex items-center gap-1.5 ml-auto">
+                        <span className={`w-1.5 h-1.5 rounded-full ${
+                          (msg.tokenUsage?.total_tokens ?? 0) === 0 ? 'bg-primary' : 'bg-secondary'
+                        }`}></span>
+                        <span>
+                          {(msg.tokenUsage?.total_tokens ?? 0) === 0
+                            ? '0 Tokens (Deterministic)'
+                            : `${msg.tokenUsage?.total_tokens ?? msg.tokensConsumed ?? 0} Tokens (${msg.tokenUsage?.token_count_method || 'actual'})`}
+                        </span>
+                      </span>
                     </div>
                   )}
 
                   {/* Collapsible Telemetry Card */}
                   {!isUser && !msg.error && expandedSolvedId === msg.id && (
-                    <div className="mt-2.5 p-3.5 rounded-xl bg-surface-container border border-outline-variant/30 text-xs font-mono space-y-2.5 w-full animate-fadeIn shadow-sm">
-                      <div className="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider flex items-center justify-between">
+                    <div className="mt-2.5 p-3.5 rounded-xl bg-surface-container border border-outline-variant/30 text-xs font-mono space-y-3 w-full animate-fadeIn shadow-sm">
+                      <div className="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider flex items-center justify-between border-b border-outline-variant/20 pb-2">
                         <span className="flex items-center gap-1.5">
                           <span className="material-symbols-outlined text-[15px]">psychology</span>
-                          <span>Execution Transparency</span>
+                          <span>Execution & Real-Time Token Telemetry</span>
                         </span>
                         <span className="text-[10px] text-on-surface-variant/70 font-normal">
-                          Live Backend Response
+                          Request ID: {msg.tokenUsage?.request_id ? msg.tokenUsage.request_id.slice(0, 13) + '...' : 'live-local'}
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] pt-1">
-                        {/* Detected Task Category */}
+                      {/* Section 1: Dispatch & Routing */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
                         <div className="p-2 rounded-lg bg-surface-container-low border border-outline-variant/20 flex flex-col gap-0.5">
                           <span className="text-[10px] text-on-surface-variant uppercase">Detected Category</span>
-                          <span className="font-semibold text-on-surface">
+                          <span className="font-semibold text-on-surface truncate">
                             {getTaskLabel(msg.taskType) || 'General Solver'}
                           </span>
                         </div>
 
-                        {/* Solver Engine Used */}
                         <div className="p-2 rounded-lg bg-surface-container-low border border-outline-variant/20 flex flex-col gap-0.5">
                           <span className="text-[10px] text-on-surface-variant uppercase">Solver Engine</span>
-                          <span className="font-semibold text-emerald-300">
+                          <span className="font-semibold text-emerald-300 truncate">
                             {msg.solverDetails?.engine || msg.solver || 'Standard Kernel'}
                           </span>
                         </div>
 
-                        {/* Actual Processing Time */}
                         <div className="p-2 rounded-lg bg-surface-container-low border border-outline-variant/20 flex flex-col gap-0.5">
                           <span className="text-[10px] text-on-surface-variant uppercase">Processing Time</span>
                           <span className="font-semibold text-on-surface">
@@ -403,11 +413,69 @@ export const ChatView: React.FC<ChatViewProps> = ({
                           </span>
                         </div>
 
-                        {/* Resource Consumption */}
                         <div className="p-2 rounded-lg bg-surface-container-low border border-outline-variant/20 flex flex-col gap-0.5">
-                          <span className="text-[10px] text-on-surface-variant uppercase">Budget / Tokens</span>
-                          <span className="font-semibold text-on-surface">
-                            {msg.solverDetails?.deterministic ? 'Deterministic (0 Tokens)' : `${msg.tokensConsumed ?? 0} tokens`}
+                          <span className="text-[10px] text-on-surface-variant uppercase">Fallback Routing</span>
+                          <span className={`font-semibold ${msg.tokenUsage?.fallback_used ? 'text-amber-400' : 'text-emerald-400'}`}>
+                            {msg.tokenUsage?.fallback_used ? 'Invoked Fallback' : 'Primary Solved'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Section 2: Real-Time Token Consumption */}
+                      <div className="p-2.5 rounded-lg bg-surface-container-low border border-outline-variant/20 space-y-2">
+                        <div className="flex items-center justify-between text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider">
+                          <span className="flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[13px]">toll</span>
+                            <span>Token Accounting</span>
+                          </span>
+                          <span className={`px-1.5 py-0.2 rounded text-[9px] uppercase font-mono ${
+                            msg.tokenUsage?.token_count_method === 'not_applicable' || (msg.tokenUsage?.total_tokens ?? 0) === 0
+                              ? 'bg-primary/20 text-primary border border-primary/30'
+                              : msg.tokenUsage?.token_count_method === 'estimated'
+                              ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                              : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                          }`}>
+                            {msg.tokenUsage?.token_count_method === 'not_applicable' || (msg.tokenUsage?.total_tokens ?? 0) === 0
+                              ? 'Not Applicable (Zero LLM)'
+                              : msg.tokenUsage?.token_count_method === 'estimated'
+                              ? 'Estimated Count'
+                              : 'Actual Token Count'}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+                          <div>
+                            <span className="text-[10px] text-on-surface-variant block">Input Tokens</span>
+                            <span className="font-bold text-on-surface font-mono">
+                              {msg.tokenUsage?.input_tokens ?? 0}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-on-surface-variant block">Output Tokens</span>
+                            <span className="font-bold text-on-surface font-mono">
+                              {msg.tokenUsage?.output_tokens ?? 0}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-on-surface-variant block">Total LLM Tokens</span>
+                            <span className="font-bold text-primary font-mono">
+                              {msg.tokenUsage?.total_tokens ?? (msg.solverDetails?.deterministic ? 0 : (msg.tokensConsumed ?? 0))}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-on-surface-variant block">LLM Invocations</span>
+                            <span className="font-bold text-on-surface font-mono">
+                              {msg.tokenUsage?.llm_calls ?? 0}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="pt-1.5 border-t border-outline-variant/15 flex flex-wrap items-center justify-between text-[10px] text-on-surface-variant">
+                          <span>
+                            Model: <strong className="text-on-surface">{msg.tokenUsage?.model || (msg.solverDetails?.deterministic ? 'None (Deterministic Kernel)' : 'Local Pipeline')}</strong>
+                          </span>
+                          <span>
+                            Paid API Cost: <strong className="text-emerald-400">{msg.tokenUsage?.estimated_cost ? `$${msg.tokenUsage.estimated_cost.toFixed(4)}` : '$0.00 (Zero External API)'}</strong>
                           </span>
                         </div>
                       </div>

@@ -125,6 +125,7 @@ export async function solveTask(
     secondary_results: data.secondary_results,
     solver_details: data.solver_details,
     memory_rss_mb: data.memory_rss_mb,
+    token_usage: data.token_usage,
   };
 
   if (!solveResult.success && solveResult.error) {
@@ -132,6 +133,40 @@ export async function solveTask(
   }
 
   return solveResult;
+}
+
+/**
+ * Call the POST /batch API endpoint
+ */
+export async function batchSolve(
+  request: { tasks: SolveRequest[] },
+  signal?: AbortSignal
+): Promise<{
+  total_tasks: number;
+  successful_tasks: number;
+  failed_tasks: number;
+  processing_time_ms: number;
+  results: SolveResponse[];
+}> {
+  const baseUrl = getApiBaseUrl();
+  const endpoint = `${baseUrl}/batch`;
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(request),
+    signal,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new ApiBackendError(errorText, response.status);
+  }
+
+  return await response.json();
 }
 
 /**
