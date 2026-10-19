@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-fixed-variant": "#005320", "on-secondary-fixed": "#271900", "tertiary-fixed-dim": "#62df7d", "surface-bright": "#2e3b43", "inverse-surface": "#d7e4ef", "surface": "#08151c", "primary-fixed-dim": "#4ae176", "tertiary": "#63e07e", "surface-variant": "#2a363f", "on-secondary": "#422c00", "on-tertiary-fixed": "#002109", "surface-tint": "#4ae176", "secondary-fixed": "#ffdea9", "on-surface": "#d7e4ef", "on-primary-fixed": "#002109", "background": "#08151c", "outline-variant": "#3d4a3d", "primary": "#4be277", "surface-container-lowest": "#041017", "on-secondary-container": "#392600", "surface-container": "#152129", "inverse-primary": "#006e2f", "on-primary": "#003915", "surface-dim": "#08151c", "on-secondary-fixed-variant": "#5f4100", "surface-container-highest": "#2a363f", "tertiary-container": "#44c365", "surface-container-low": "#111d25", "on-tertiary-container": "#004b1d", "on-tertiary": "#003914", "on-background": "#d7e4ef", "inverse-on-surface": "#26323a", "secondary-container": "#bd8707", "error-container": "#93000a", "on-error": "#690005", "on-surface-variant": "#bccbb9", "on-primary-container": "#004b1e", "secondary": "#fabc45", "tertiary-fixed": "#7ffc97", "surface-container-high": "#1f2c33", "on-primary-fixed-variant": "#005321", "on-error-container": "#ffdad6", "error": "#ffb4ab", "primary-container": "#22c55e", "primary-fixed": "#6bff8f", "secondary-fixed-dim": "#fabc45", "outline": "#869585" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "gutter-lg": "1.5rem", "space-xl": "2rem", "space-sm": "0.5rem", "space-md": "1rem", "margin-lg": "2rem", "gutter": "1rem", "space-xs": "0.25rem", "space-lg": "1.5rem", "margin": "1rem" }, "fontFamily": { "headline-md": ["Inter"], "code-lg": ["JetBrains Mono"], "headline-xl-mobile": ["Inter"], "code-sm": ["JetBrains Mono"], "headline-lg": ["Inter"], "label-sm": ["JetBrains Mono"], "body-sm": ["Inter"], "label-md": ["JetBrains Mono"], "headline-xl": ["Inter"], "body-md": ["Inter"], "body-lg": ["Inter"], "code-md": ["JetBrains Mono"] }, "fontSize": { "headline-md": ["18px", { "lineHeight": "24px", "fontWeight": "600" }], "code-lg": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "headline-xl-mobile": ["26px", { "lineHeight": "32px", "fontWeight": "600" }], "code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }], "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }], "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "code-md": ["12px", { "lineHeight": "16px", "fontWeight": "400" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low border-r border-outline-variant/30 z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-16 px-space-md border-b border-outline-variant/20 flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="CogniFlow Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XmlGo1Zb0saAtkH77eKeBJuVE_fv6VCK1n3ZFQbG1MtQb4HwcohUt21ks8-wN3gyDMgjbLnRexaX15hxpELPRb4xyFtjMBnux690IsgM1-qbK6_e3o1Ks6jpdeqD9Px70YsjwWW4R1VCRCdhyarJfbDeRYReIrSZ4NC344X_wrd3sLQV-nDi_0Kh6RYiOmuJ2Miqas0mlU-FJ_elWYcSryBzR59xqzEy-VVHLixNQiisR8ronBAow3jw"/><span class="font-headline-md text-headline-md tracking-tight text-on-surface">CogniFlow</span></div><span class="font-label-sm text-label-sm font-semibold uppercase px-space-xs py-0.5 rounded bg-surface-container-highest text-primary border border-primary/20">v0.1-alpha</span></div><div class="p-space-md"><button class="w-full flex items-center justify-center gap-space-xs py-space-sm px-space-md bg-surface-container-high border border-primary/40 rounded-xl text-primary font-headline-md text-body-md hover:bg-primary-container hover:text-on-primary-container transition-all shadow-[0_0_12px_rgba(75,226,119,0.15)] group"><span class="material-symbols-outlined text-[18px] group-hover:rotate-90 transition-transform">add</span><span>New Task</span><span class="ml-auto font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-primary-container font-mono opacity-60">⌘N</span></button></div><nav class="flex flex-col gap-1 px-space-sm" data-active-classes="bg-surface-container-high text-primary border border-primary/20 font-semibold shadow-inner"><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="workspace" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">terminal</span><span class="font-body-md text-body-md">Workspace</span></div><span class="font-code-sm text-code-sm text-on-surface-variant/70">⌥1</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="task-history" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">history</span><span class="font-body-md text-body-md">Task History</span></div><span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant">14</span></a><a aria-current="page" class="flex items-center justify-between px-space-md py-space-sm rounded-lg transition-all bg-surface-container-high text-primary border border-primary/20 font-semibold shadow-inner" data-path="solver-overview" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">hub</span><span class="font-body-md text-body-md">Solver Overview</span></div><span class="font-code-sm text-code-sm text-on-surface-variant/70">⌥3</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="settings-status" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-body-md text-body-md">Settings & Status</span></div><span class="material-symbols-outlined text-[16px] text-on-surface-variant/50">circle</span></a></nav></div><div class="p-space-md border-t border-outline-variant/20 flex flex-col gap-space-sm bg-surface-container-lowest/50"><div class="flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span><span class="font-code-sm text-code-sm text-on-surface">Engine: Ready</span></div><span class="font-code-sm text-code-sm text-primary uppercase bg-primary-container/10 border border-primary/20 px-1 rounded">Deterministic</span></div><div class="flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="inline-flex h-1.5 w-1.5 rounded-full bg-primary"></span><span class="font-code-sm text-code-sm text-on-surface-variant">API: Connected</span></div><span class="font-code-sm text-code-sm text-on-surface-variant/70">FastAPI 2ms</span></div><div class="pt-space-xs border-t border-outline-variant/10 flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant/60">CogniFlow v0.1 • Local-First</span><span class="font-label-sm text-label-sm text-primary/80 uppercase">Ready</span></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/90 backdrop-blur-xl border-b border-outline-variant/20 z-40 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-sm text-on-surface-variant font-code-sm text-code-sm"><span class="material-symbols-outlined text-[16px] text-primary">account_tree</span><span class="text-on-surface-variant/60 font-mono">SYS</span><span class="text-on-surface-variant/40">/</span><span class="text-primary font-mono font-medium tracking-wide uppercase">WORKSPACE</span><span class="text-on-surface-variant/40">/</span><span class="text-on-surface font-mono">SOLVER CONSOLE</span></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs px-2.5 py-1 rounded-full bg-surface-container border border-outline-variant/30 text-body-sm"><span class="h-1.5 w-1.5 rounded-full bg-secondary animate-pulse"></span><span class="font-code-sm text-code-sm text-on-surface">Smart Mode</span><span class="font-label-sm text-label-sm text-secondary bg-secondary-container/20 px-1 py-0.2 rounded uppercase">Auto</span></div><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-high border border-outline-variant/20 font-code-sm text-code-sm"><span class="text-on-surface-variant">Local:</span><span class="text-primary">Active</span><span class="text-outline-variant">|</span><span class="text-on-surface-variant">Deterministic:</span><span class="text-primary">0-Token</span></div><div class="flex items-center gap-space-sm"><button class="h-8 px-2.5 flex items-center gap-1 rounded bg-surface-container-high border border-outline-variant/30 text-on-surface-variant hover:text-on-surface font-code-sm text-code-sm transition-colors"><span class="material-symbols-outlined text-[16px]">code</span><span>API Docs</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<div class="p-space-lg lg:p-margin-lg space-y-gutter-lg max-w-[1720px] mx-auto w-full">
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-lg lg:p-margin-lg shadow-xl">
+<div class="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
+<div class="absolute left-1/3 -bottom-20 w-80 h-80 rounded-full bg-secondary/5 blur-3xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col xl:flex-row xl:items-end justify-between gap-space-lg">
+<div class="max-w-4xl space-y-space-xs">
+<div class="flex items-center gap-space-sm mb-space-xs">
+<span class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container-highest text-primary font-code-sm text-code-sm uppercase tracking-wider">
+<span class="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+              Runtime Engine v0.1.8-Edge
+            </span>
+<span class="text-on-surface-variant font-code-sm text-code-sm">Telemetry Feed: Syncing (0.4s heartbeat)</span>
+</div>
+<div class="flex items-baseline gap-space-sm">
+<span class="text-outline-variant font-code-lg text-code-lg select-none">§ 04</span>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Solver Engine & Category Registry</h1>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed max-w-3xl pt-1">
+            CogniFlow dynamically dispatches incoming tasks across 8 specialized execution engines, preferring deterministic algorithms to eliminate cloud LLM overhead.
+          </p>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm font-code-sm text-code-sm">
+<div class="flex items-center gap-2 px-space-md py-space-sm bg-surface-container rounded-lg">
+<span class="text-on-surface-variant">Dispatcher Policy:</span>
+<span class="text-primary font-semibold">Deterministic First</span>
+</div>
+<button class="flex items-center gap-1.5 px-space-md py-space-sm bg-primary text-on-primary rounded-lg font-headline-md text-body-md hover:bg-primary-container transition-all" id="toggle-filter">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+<span>Simulate Query Dispatch</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md mt-gutter-lg">
+<div class="p-space-md rounded-xl bg-surface-container hover:bg-surface-container-high transition-all shadow-md group">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-code-sm text-code-sm uppercase tracking-wider">Total Tasks Processed</span>
+<span class="material-symbols-outlined text-[18px] text-primary group-hover:scale-110 transition-transform">memory</span>
+</div>
+<div class="mt-2 flex items-baseline justify-between">
+<span class="font-headline-xl text-headline-xl text-on-surface font-mono tracking-tight">420,119</span>
+<span class="font-code-sm text-code-sm text-primary flex items-center">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>+12.4%
+            </span>
+</div>
+<div class="mt-space-xs flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Throughput</span>
+<span class="text-on-surface">328 tasks/sec</span>
+</div>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container hover:bg-surface-container-high transition-all shadow-md group">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-code-sm text-code-sm uppercase tracking-wider">Zero-Token Ratio</span>
+<span class="material-symbols-outlined text-[18px] text-primary group-hover:scale-110 transition-transform">bolt</span>
+</div>
+<div class="mt-2 flex items-baseline justify-between">
+<span class="font-headline-xl text-headline-xl text-primary font-mono tracking-tight">78.4%</span>
+<span class="font-code-sm text-code-sm text-tertiary-fixed-dim bg-on-tertiary-fixed-variant px-1.5 py-0.5 rounded">Optimal</span>
+</div>
+<div class="mt-space-xs flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>LLM Invocations Bypassed</span>
+<span class="text-on-surface">329,373 ops</span>
+</div>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container hover:bg-surface-container-high transition-all shadow-md group">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-code-sm text-code-sm uppercase tracking-wider">Avg Execution Latency</span>
+<span class="material-symbols-outlined text-[18px] text-secondary group-hover:scale-110 transition-transform">timer</span>
+</div>
+<div class="mt-2 flex items-baseline justify-between">
+<span class="font-headline-xl text-headline-xl text-on-surface font-mono tracking-tight">14.2<span class="text-headline-md text-on-surface-variant font-sans">ms</span></span>
+<span class="font-code-sm text-code-sm text-secondary bg-surface-container-highest px-1.5 py-0.5 rounded">p95: 38ms</span>
+</div>
+<div class="mt-space-xs flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Deterministic P50</span>
+<span class="text-primary font-mono">1.8ms</span>
+</div>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container hover:bg-surface-container-high transition-all shadow-md group">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-code-sm text-code-sm uppercase tracking-wider">Cloud Compute Avoided</span>
+<span class="material-symbols-outlined text-[18px] text-tertiary group-hover:scale-110 transition-transform">savings</span>
+</div>
+<div class="mt-2 flex items-baseline justify-between">
+<span class="font-headline-xl text-headline-xl text-on-surface font-mono tracking-tight">$3,842<span class="text-headline-md text-on-surface-variant">.10</span></span>
+<span class="font-label-sm text-label-sm text-primary bg-primary/10 px-1.5 py-0.5 rounded uppercase">USD Net</span>
+</div>
+<div class="mt-space-xs flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Carbon Offloaded</span>
+<span class="text-on-surface">~42.8 kg CO₂e</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="h-2 w-2 rounded-full bg-primary"></span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Registered Solver Engines</h2>
+<span class="font-code-sm text-code-sm text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded">8 Active</span>
+</div>
+<div class="hidden md:flex items-center gap-space-sm font-code-sm text-code-sm text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-primary"></span> Deterministic (0 LLM)</span>
+<span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-sky-400"></span> Edge NLP</span>
+<span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-secondary"></span> Quantized Local LLM</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space-md">
+<div class="flex flex-col justify-between p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all shadow-md group relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-primary"></div>
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-primary/10 text-primary uppercase font-mono tracking-wider">Engine 01</span>
+<span class="flex items-center gap-1 font-code-sm text-code-sm text-primary">
+<span class="h-1.5 w-1.5 rounded-full bg-primary animate-ping"></span>
+                ONLINE • ACTIVE
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Mathematical Reasoning</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">Solve algebraic equation, calculate statistics, matrix operations</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest font-code-sm text-code-sm space-y-1">
+<div class="flex justify-between text-on-surface-variant">
+<span>Solver Core:</span>
+<span class="text-on-surface font-medium">Deterministic Python</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Engines:</span>
+<span class="text-primary">SymPy / AST Evaluator</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Latency Benchmark:</span>
+<span class="text-primary font-bold">< 3ms</span>
+</div>
+</div>
+</div>
+<div class="pt-space-sm mt-space-sm flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Accuracy: <strong class="text-on-surface font-mono">100.0%</strong></span>
+<span class="px-2 py-0.5 rounded bg-primary/20 text-primary text-[10px] font-bold">0-TOKEN</span>
+</div>
+</div>
+<div class="flex flex-col justify-between p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all shadow-md group relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-sky-400"></div>
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-sky-400/10 text-sky-400 uppercase font-mono tracking-wider">Engine 02</span>
+<span class="flex items-center gap-1 font-code-sm text-code-sm text-primary">
+<span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+                ONLINE • ACTIVE
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-sky-400 transition-colors">Sentiment Classification</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">Determine polarity & emotion score of customer reviews</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest font-code-sm text-code-sm space-y-1">
+<div class="flex justify-between text-on-surface-variant">
+<span>Solver Core:</span>
+<span class="text-on-surface font-medium">Lightweight NLP</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Engines:</span>
+<span class="text-sky-400">VADER / Lexical Scorer</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Latency Benchmark:</span>
+<span class="text-sky-400 font-bold">< 15ms</span>
+</div>
+</div>
+</div>
+<div class="pt-space-sm mt-space-sm flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Accuracy: <strong class="text-on-surface font-mono">96.8%</strong></span>
+<span class="px-2 py-0.5 rounded bg-sky-400/20 text-sky-400 text-[10px] font-bold">EDGE NLP</span>
+</div>
+</div>
+<div class="flex flex-col justify-between p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all shadow-md group relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-sky-400"></div>
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-sky-400/10 text-sky-400 uppercase font-mono tracking-wider">Engine 03</span>
+<span class="flex items-center gap-1 font-code-sm text-code-sm text-primary">
+<span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+                ONLINE • ACTIVE
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-sky-400 transition-colors">Named Entity Recognition (NER)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">Extract dates, organizations, amounts, and medical terms</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest font-code-sm text-code-sm space-y-1">
+<div class="flex justify-between text-on-surface-variant">
+<span>Solver Core:</span>
+<span class="text-on-surface font-medium">Pattern Matcher + Spacy</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Engines:</span>
+<span class="text-sky-400">SpaCy C-Optimized Small</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Latency Benchmark:</span>
+<span class="text-sky-400 font-bold">< 22ms</span>
+</div>
+</div>
+</div>
+<div class="pt-space-sm mt-space-sm flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Accuracy: <strong class="text-on-surface font-mono">94.2%</strong></span>
+<span class="px-2 py-0.5 rounded bg-sky-400/20 text-sky-400 text-[10px] font-bold">HYBRID</span>
+</div>
+</div>
+<div class="flex flex-col justify-between p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all shadow-md group relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-secondary"></div>
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-secondary/10 text-secondary uppercase font-mono tracking-wider">Engine 04</span>
+<span class="flex items-center gap-1 font-code-sm text-code-sm text-primary">
+<span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+                ONLINE • ACTIVE
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-secondary transition-colors">Code Debugging</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">Detect syntax errors, off-by-one loops, unhandled null pointers</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest font-code-sm text-code-sm space-y-1">
+<div class="flex justify-between text-on-surface-variant">
+<span>Solver Core:</span>
+<span class="text-on-surface font-medium">AST + Local Code Model</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Engines:</span>
+<span class="text-secondary">Tree-sitter / Llama-3-8B-Q4</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Latency Benchmark:</span>
+<span class="text-secondary font-bold">~180ms</span>
+</div>
+</div>
+</div>
+<div class="pt-space-sm mt-space-sm flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Precision: <strong class="text-on-surface font-mono">91.5%</strong></span>
+<span class="px-2 py-0.5 rounded bg-secondary/20 text-secondary text-[10px] font-bold">LOCAL LLM</span>
+</div>
+</div>
+<div class="flex flex-col justify-between p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all shadow-md group relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-secondary"></div>
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-secondary/10 text-secondary uppercase font-mono tracking-wider">Engine 05</span>
+<span class="flex items-center gap-1 font-code-sm text-code-sm text-primary">
+<span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+                ONLINE • ACTIVE
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-secondary transition-colors">Code Generation</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">Generate FastAPI route handlers, SQL queries, regex patterns</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest font-code-sm text-code-sm space-y-1">
+<div class="flex justify-between text-on-surface-variant">
+<span>Solver Core:</span>
+<span class="text-on-surface font-medium">Local Language Model</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Engines:</span>
+<span class="text-secondary">StarCoder 4-bit / CodeLlama</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Latency Benchmark:</span>
+<span class="text-secondary font-bold">~320ms</span>
+</div>
+</div>
+</div>
+<div class="pt-space-sm mt-space-sm flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Unit Pass: <strong class="text-on-surface font-mono">88.9%</strong></span>
+<span class="px-2 py-0.5 rounded bg-secondary/20 text-secondary text-[10px] font-bold">QUANTIZED</span>
+</div>
+</div>
+<div class="flex flex-col justify-between p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all shadow-md group relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-secondary"></div>
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-secondary/10 text-secondary uppercase font-mono tracking-wider">Engine 06</span>
+<span class="flex items-center gap-1 font-code-sm text-code-sm text-primary">
+<span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+                ONLINE • ACTIVE
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-secondary transition-colors">Summarization</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">Condense logs, documentation, customer tickets</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest font-code-sm text-code-sm space-y-1">
+<div class="flex justify-between text-on-surface-variant">
+<span>Solver Core:</span>
+<span class="text-on-surface font-medium">Extractive / Quantized LLM</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Engines:</span>
+<span class="text-secondary">TextRank / Mistral-7B-Instruct</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Latency Benchmark:</span>
+<span class="text-secondary font-bold">~260ms</span>
+</div>
+</div>
+</div>
+<div class="pt-space-sm mt-space-sm flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Compression: <strong class="text-on-surface font-mono">4.2x</strong></span>
+<span class="px-2 py-0.5 rounded bg-secondary/20 text-secondary text-[10px] font-bold">LOCAL LLM</span>
+</div>
+</div>
+<div class="flex flex-col justify-between p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all shadow-md group relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-primary"></div>
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-primary/10 text-primary uppercase font-mono tracking-wider">Engine 07</span>
+<span class="flex items-center gap-1 font-code-sm text-code-sm text-primary">
+<span class="h-1.5 w-1.5 rounded-full bg-primary animate-ping"></span>
+                ONLINE • ACTIVE
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Logical Reasoning</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">Boolean satisfiability, scheduling conflicts, syllogisms</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest font-code-sm text-code-sm space-y-1">
+<div class="flex justify-between text-on-surface-variant">
+<span>Solver Core:</span>
+<span class="text-on-surface font-medium">Deterministic SMT Solver</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Engines:</span>
+<span class="text-primary">Z3 Theorem Prover / MiniSat</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Latency Benchmark:</span>
+<span class="text-primary font-bold">< 12ms</span>
+</div>
+</div>
+</div>
+<div class="pt-space-sm mt-space-sm flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Soundness: <strong class="text-on-surface font-mono">100.0%</strong></span>
+<span class="px-2 py-0.5 rounded bg-primary/20 text-primary text-[10px] font-bold">0-TOKEN</span>
+</div>
+</div>
+<div class="flex flex-col justify-between p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all shadow-md group relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-secondary"></div>
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-secondary/10 text-secondary uppercase font-mono tracking-wider">Engine 08</span>
+<span class="flex items-center gap-1 font-code-sm text-code-sm text-primary">
+<span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+                ONLINE • ACTIVE
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-secondary transition-colors">Factual Knowledge</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">System architecture definitions, historical data lookup</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest font-code-sm text-code-sm space-y-1">
+<div class="flex justify-between text-on-surface-variant">
+<span>Solver Core:</span>
+<span class="text-on-surface font-medium">Vector Index + Edge LLM</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Engines:</span>
+<span class="text-secondary">Faiss / Gemma-2-2B Quantized</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Latency Benchmark:</span>
+<span class="text-secondary font-bold">~140ms</span>
+</div>
+</div>
+</div>
+<div class="pt-space-sm mt-space-sm flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Recall: <strong class="text-on-surface font-mono">97.1%</strong></span>
+<span class="px-2 py-0.5 rounded bg-secondary/20 text-secondary text-[10px] font-bold">LOCAL RAG</span>
+</div>
+</div>
+</div>
+</div>
+<div class="rounded-xl bg-surface-container-low p-space-lg shadow-xl relative overflow-hidden">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm mb-space-lg">
+<div>
+<div class="flex items-center gap-space-xs text-primary font-code-sm text-code-sm uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">device_hub</span>
+<span>Realtime Pipeline Architecture</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mt-1">Zero-Token Dispatch Flow</h2>
+</div>
+<div class="flex items-center gap-space-sm text-on-surface-variant font-code-sm text-code-sm">
+<span class="px-2.5 py-1 bg-surface-container rounded border-none">Pipeline Latency Floor: 0.8ms</span>
+<span class="px-2.5 py-1 bg-surface-container rounded border-none">Bypass Rate: 78.4%</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-center">
+<div class="lg:col-span-3 p-space-md rounded-xl bg-surface-container flex flex-col gap-space-sm shadow-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Step 01: Ingress</span>
+<span class="h-2 w-2 rounded-full bg-primary animate-ping"></span>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">input</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface">User Request</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">Payload via HTTP / gRPC</div>
+</div>
+</div>
+<div class="p-space-xs rounded bg-surface-container-lowest font-code-sm text-code-sm text-on-surface-variant font-mono">
+            > POST /v1/solve<br/>
+            > Content-Type: application/json
+          </div>
+</div>
+<div class="hidden lg:flex lg:col-span-1 items-center justify-center">
+<div class="flex flex-col items-center">
+<span class="text-primary font-code-sm text-code-sm font-mono">< 0.4ms</span>
+<span class="material-symbols-outlined text-primary text-[28px]">arrow_forward</span>
+</div>
+</div>
+<div class="lg:col-span-3 p-space-md rounded-xl bg-surface-container flex flex-col gap-space-sm shadow-md ring-1 ring-primary/30">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary uppercase">Step 02: Heuristic Analysis</span>
+<span class="font-code-sm text-code-sm text-primary font-mono">0 Token</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">alt_route</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface">Heuristic Classifier</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">Pattern & AST matcher</div>
+</div>
+</div>
+<div class="space-y-1 text-code-sm font-code-sm">
+<div class="flex justify-between p-1 rounded bg-surface-container-lowest text-primary">
+<span>Deterministic Rule</span>
+<span>Matched (78%)</span>
+</div>
+<div class="flex justify-between p-1 rounded bg-surface-container-lowest text-on-surface-variant">
+<span>Deep Semantic</span>
+<span>Fallback (22%)</span>
+</div>
+</div>
+</div>
+<div class="hidden lg:flex lg:col-span-1 items-center justify-center">
+<div class="flex flex-col items-center gap-1">
+<span class="text-on-surface-variant font-code-sm text-code-sm font-mono">Route</span>
+<div class="flex flex-col text-center">
+<span class="material-symbols-outlined text-primary text-[22px]">turn_slight_right</span>
+<span class="material-symbols-outlined text-secondary text-[22px]">turn_slight_left</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-4 flex flex-col gap-space-sm">
+<div class="p-space-md rounded-xl bg-surface-container shadow-md border-l-4 border-primary">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-primary font-headline-md text-body-md font-semibold">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span>Deterministic Branch (Preferred)</span>
+</div>
+<span class="font-code-sm text-code-sm text-primary bg-primary/10 px-2 py-0.5 rounded font-mono">< 5ms</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Direct dispatch to SymPy, Z3 SMT Prover, or Regex Engine. Zero latency overhead, 100% precision.
+            </p>
+<div class="mt-space-xs flex items-center gap-space-sm font-code-sm text-code-sm text-primary">
+<span class="flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-primary"></span> Python 3.12 Engine</span>
+<span>•</span>
+<span>0 Tokens Consumed</span>
+</div>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container shadow-md border-l-4 border-secondary">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-secondary font-headline-md text-body-md font-semibold">
+<span class="material-symbols-outlined text-[18px]">smart_toy</span>
+<span>Local AI / Fallback Branch</span>
+</div>
+<span class="font-code-sm text-code-sm text-secondary bg-secondary/10 px-2 py-0.5 rounded font-mono">140 - 320ms</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Ambiguous natural language triggers quantized edge models (StarCoder, Mistral, Gemma 4-bit) locally.
+            </p>
+<div class="mt-space-xs flex items-center gap-space-sm font-code-sm text-code-sm text-secondary">
+<span class="flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-secondary"></span> Edge Quantized LLM</span>
+<span>•</span>
+<span>0 Cloud Ingress Cost</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-space-md">
+<div class="p-space-md rounded-xl bg-surface-container-low shadow-md space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-headline-md text-on-surface">Category Distribution</span>
+<span class="material-symbols-outlined text-primary text-[20px]">pie_chart</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Live breakdown of inbound requests by task category.</p>
+<div class="space-y-2 pt-2">
+<div>
+<div class="flex justify-between font-code-sm text-code-sm text-on-surface-variant mb-1">
+<span>Mathematical & Logical (Engines 1 & 7)</span>
+<span class="text-primary font-mono">48.2%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-lowest overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 48.2%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-code-sm text-code-sm text-on-surface-variant mb-1">
+<span>Lightweight NLP & NER (Engines 2 & 3)</span>
+<span class="text-sky-400 font-mono">30.2%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-lowest overflow-hidden">
+<div class="h-full bg-sky-400 rounded-full" style="width: 30.2%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-code-sm text-code-sm text-on-surface-variant mb-1">
+<span>Code & Summarization (Engines 4, 5, 6, 8)</span>
+<span class="text-secondary font-mono">21.6%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-lowest overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 21.6%"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container-low shadow-md space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-headline-md text-on-surface">Hardware Resource Bound</span>
+<span class="material-symbols-outlined text-primary text-[20px]">speed</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Edge node telemetry and host memory footprint.</p>
+<div class="grid grid-cols-2 gap-space-sm pt-1">
+<div class="p-space-sm rounded-lg bg-surface-container">
+<span class="font-code-sm text-code-sm text-on-surface-variant">CPU AST Core:</span>
+<div class="font-mono font-bold text-on-surface text-[18px] mt-1">4.2%</div>
+<span class="font-code-sm text-code-sm text-primary">Ultra low overhead</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container">
+<span class="font-code-sm text-code-sm text-on-surface-variant">VRAM Footprint:</span>
+<div class="font-mono font-bold text-on-surface text-[18px] mt-1">5.8 GB</div>
+<span class="font-code-sm text-code-sm text-secondary">4-bit models cached</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container">
+<span class="font-code-sm text-code-sm text-on-surface-variant">Active Threads:</span>
+<div class="font-mono font-bold text-on-surface text-[18px] mt-1">16 / 16</div>
+<span class="font-code-sm text-code-sm text-primary">Non-blocking async</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container">
+<span class="font-code-sm text-code-sm text-on-surface-variant">Queue Depth:</span>
+<div class="font-mono font-bold text-on-surface text-[18px] mt-1">0 tasks</div>
+<span class="font-code-sm text-code-sm text-primary">Zero backlog</span>
+</div>
+</div>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container-low shadow-md flex flex-col justify-between">
+<div class="space-y-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-headline-md text-on-surface">Realtime Dispatch Tester</span>
+<span class="font-label-sm text-label-sm text-primary bg-primary/10 px-1.5 py-0.5 rounded font-mono">INTERACTIVE</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Enter a prompt to watch heuristic categorization in action:</p>
+<div class="relative mt-2">
+<input class="w-full px-space-sm py-2 rounded-lg bg-surface-container-lowest text-on-surface font-code-sm text-code-sm focus:outline-none focus:ring-1 focus:ring-primary" id="sample-input" type="text" value="solve 4x^2 - 16 = 0 for x"/>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container text-code-sm font-code-sm space-y-1" id="sample-result">
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Target Solver:</span>
+<span class="text-primary font-bold">Mathematical Reasoning</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Predicted Latency:</span>
+<span class="text-primary font-bold">1.2ms (Zero-Token)</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-space-sm py-2 px-space-md rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-headline-md text-body-sm transition-all flex items-center justify-center gap-2" id="run-test-btn">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+<span>Classify & Benchmark</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const input = document.getElementById('sample-input');
+    const resultBox = document.getElementById('sample-result');
+    const btn = document.getElementById('run-test-btn');
+    const toggleFilterBtn = document.getElementById('toggle-filter');
+
+    const testCases = [
+      { q: "solve 4x^2 - 16 = 0 for x", solver: "Mathematical Reasoning", latency: "1.2ms (Zero-Token)" },
+      { q: "Extract all company names from this 10-K filing", solver: "Named Entity Recognition (NER)", latency: "18.4ms (Lightweight NLP)" },
+      { q: "Is this review positive or negative: 'Defective screen on arrival'", solver: "Sentiment Classification", latency: "6.8ms (VADER Engine)" },
+      { q: "Check satisfiability for (A OR B) AND (!A OR C)", solver: "Logical Reasoning", latency: "2.1ms (SMT Z3 Prover)" },
+      { q: "Write a FastAPI CRUD endpoint with Redis caching", solver: "Code Generation", latency: "280ms (Local StarCoder)" },
+      { q: "Find the off-by-one bug in this binary search loop", solver: "Code Debugging", latency: "145ms (AST + TreeSitter)" }
+    ];
+
+    let currentIdx = 0;
+
+    function runEvaluation() {
+      if (!input || !resultBox) return;
+      const val = input.value.toLowerCase();
+      let matched = testCases[currentIdx % testCases.length];
+
+      if (val.includes("solve") || val.includes("calculate") || val.includes("=")) {
+        matched = testCases[0];
+      } else if (val.includes("extract") || val.includes("company") || val.includes("date")) {
+        matched = testCases[1];
+      } else if (val.includes("positive") || val.includes("sentiment") || val.includes("review")) {
+        matched = testCases[2];
+      } else if (val.includes("satisfiability") || val.includes("or") || val.includes("and")) {
+        matched = testCases[3];
+      } else if (val.includes("fastapi") || val.includes("write") || val.includes("generate")) {
+        matched = testCases[4];
+      } else if (val.includes("bug") || val.includes("search") || val.includes("debug")) {
+        matched = testCases[5];
+      }
+
+      resultBox.innerHTML = `
+        <div class="flex justify-between">
+          <span class="text-on-surface-variant">Target Solver:</span>
+          <span class="text-primary font-bold">\${matched.solver}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-on-surface-variant">Predicted Latency:</span>
+          <span class="text-primary font-bold">\${matched.latency}</span>
+        </div>
+      `;
+    }
+
+    if (btn) {
+      btn.addEventListener('click', runEvaluation);
+    }
+
+    if (toggleFilterBtn) {
+      toggleFilterBtn.addEventListener('click', function() {
+        currentIdx = (currentIdx + 1) % testCases.length;
+        if (input) {
+          input.value = testCases[currentIdx].q;
+          runEvaluation();
+        }
+      });
+    }
+
+    if (input) {
+      input.addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+          runEvaluation();
+        }
+      });
+    }
+  })();
+</script></main></div></body></html>

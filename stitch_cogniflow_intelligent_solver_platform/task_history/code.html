@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-fixed-variant": "#005320", "on-secondary-fixed": "#271900", "tertiary-fixed-dim": "#62df7d", "surface-bright": "#2e3b43", "inverse-surface": "#d7e4ef", "surface": "#08151c", "primary-fixed-dim": "#4ae176", "tertiary": "#63e07e", "surface-variant": "#2a363f", "on-secondary": "#422c00", "on-tertiary-fixed": "#002109", "surface-tint": "#4ae176", "secondary-fixed": "#ffdea9", "on-surface": "#d7e4ef", "on-primary-fixed": "#002109", "background": "#08151c", "outline-variant": "#3d4a3d", "primary": "#4be277", "surface-container-lowest": "#041017", "on-secondary-container": "#392600", "surface-container": "#152129", "inverse-primary": "#006e2f", "on-primary": "#003915", "surface-dim": "#08151c", "on-secondary-fixed-variant": "#5f4100", "surface-container-highest": "#2a363f", "tertiary-container": "#44c365", "surface-container-low": "#111d25", "on-tertiary-container": "#004b1d", "on-tertiary": "#003914", "on-background": "#d7e4ef", "inverse-on-surface": "#26323a", "secondary-container": "#bd8707", "error-container": "#93000a", "on-error": "#690005", "on-surface-variant": "#bccbb9", "on-primary-container": "#004b1e", "secondary": "#fabc45", "tertiary-fixed": "#7ffc97", "surface-container-high": "#1f2c33", "on-primary-fixed-variant": "#005321", "on-error-container": "#ffdad6", "error": "#ffb4ab", "primary-container": "#22c55e", "primary-fixed": "#6bff8f", "secondary-fixed-dim": "#fabc45", "outline": "#869585" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "gutter-lg": "1.5rem", "space-xl": "2rem", "space-sm": "0.5rem", "space-md": "1rem", "margin-lg": "2rem", "gutter": "1rem", "space-xs": "0.25rem", "space-lg": "1.5rem", "margin": "1rem" }, "fontFamily": { "headline-md": ["Inter"], "code-lg": ["JetBrains Mono"], "headline-xl-mobile": ["Inter"], "code-sm": ["JetBrains Mono"], "headline-lg": ["Inter"], "label-sm": ["JetBrains Mono"], "body-sm": ["Inter"], "label-md": ["JetBrains Mono"], "headline-xl": ["Inter"], "body-md": ["Inter"], "body-lg": ["Inter"], "code-md": ["JetBrains Mono"] }, "fontSize": { "headline-md": ["18px", { "lineHeight": "24px", "fontWeight": "600" }], "code-lg": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "headline-xl-mobile": ["26px", { "lineHeight": "32px", "fontWeight": "600" }], "code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }], "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }], "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "code-md": ["12px", { "lineHeight": "16px", "fontWeight": "400" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low border-r border-outline-variant/30 z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-16 px-space-md border-b border-outline-variant/20 flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="CogniFlow Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XmlGo1Zb0saAtkH77eKeBJuVE_fv6VCK1n3ZFQbG1MtQb4HwcohUt21ks8-wN3gyDMgjbLnRexaX15hxpELPRb4xyFtjMBnux690IsgM1-qbK6_e3o1Ks6jpdeqD9Px70YsjwWW4R1VCRCdhyarJfbDeRYReIrSZ4NC344X_wrd3sLQV-nDi_0Kh6RYiOmuJ2Miqas0mlU-FJ_elWYcSryBzR59xqzEy-VVHLixNQiisR8ronBAow3jw"/><span class="font-headline-md text-headline-md tracking-tight text-on-surface">CogniFlow</span></div><span class="font-label-sm text-label-sm font-semibold uppercase px-space-xs py-0.5 rounded bg-surface-container-highest text-primary border border-primary/20">v0.1-alpha</span></div><div class="p-space-md"><button class="w-full flex items-center justify-center gap-space-xs py-space-sm px-space-md bg-surface-container-high border border-primary/40 rounded-xl text-primary font-headline-md text-body-md hover:bg-primary-container hover:text-on-primary-container transition-all shadow-[0_0_12px_rgba(75,226,119,0.15)] group"><span class="material-symbols-outlined text-[18px] group-hover:rotate-90 transition-transform">add</span><span>New Task</span><span class="ml-auto font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-primary-container font-mono opacity-60">⌘N</span></button></div><nav class="flex flex-col gap-1 px-space-sm" data-active-classes="bg-surface-container-high text-primary border border-primary/20 font-semibold shadow-inner"><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="workspace" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">terminal</span><span class="font-body-md text-body-md">Workspace</span></div><span class="font-code-sm text-code-sm text-on-surface-variant/70">⌥1</span></a><a aria-current="page" class="flex items-center justify-between px-space-md py-space-sm rounded-lg transition-all bg-surface-container-high text-primary border border-primary/20 font-semibold shadow-inner" data-path="task-history" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">history</span><span class="font-body-md text-body-md">Task History</span></div><span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant">14</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="solver-overview" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">hub</span><span class="font-body-md text-body-md">Solver Overview</span></div><span class="font-code-sm text-code-sm text-on-surface-variant/70">⌥3</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="settings-status" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-body-md text-body-md">Settings & Status</span></div><span class="material-symbols-outlined text-[16px] text-on-surface-variant/50">circle</span></a></nav></div><div class="p-space-md border-t border-outline-variant/20 flex flex-col gap-space-sm bg-surface-container-lowest/50"><div class="flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span><span class="font-code-sm text-code-sm text-on-surface">Engine: Ready</span></div><span class="font-code-sm text-code-sm text-primary uppercase bg-primary-container/10 border border-primary/20 px-1 rounded">Deterministic</span></div><div class="flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="inline-flex h-1.5 w-1.5 rounded-full bg-primary"></span><span class="font-code-sm text-code-sm text-on-surface-variant">API: Connected</span></div><span class="font-code-sm text-code-sm text-on-surface-variant/70">FastAPI 2ms</span></div><div class="pt-space-xs border-t border-outline-variant/10 flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant/60">CogniFlow v0.1 • Local-First</span><span class="font-label-sm text-label-sm text-primary/80 uppercase">Ready</span></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/90 backdrop-blur-xl border-b border-outline-variant/20 z-40 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-sm text-on-surface-variant font-code-sm text-code-sm"><span class="material-symbols-outlined text-[16px] text-primary">account_tree</span><span class="text-on-surface-variant/60 font-mono">SYS</span><span class="text-on-surface-variant/40">/</span><span class="text-primary font-mono font-medium tracking-wide uppercase">WORKSPACE</span><span class="text-on-surface-variant/40">/</span><span class="text-on-surface font-mono">SOLVER CONSOLE</span></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs px-2.5 py-1 rounded-full bg-surface-container border border-outline-variant/30 text-body-sm"><span class="h-1.5 w-1.5 rounded-full bg-secondary animate-pulse"></span><span class="font-code-sm text-code-sm text-on-surface">Smart Mode</span><span class="font-label-sm text-label-sm text-secondary bg-secondary-container/20 px-1 py-0.2 rounded uppercase">Auto</span></div><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-high border border-outline-variant/20 font-code-sm text-code-sm"><span class="text-on-surface-variant">Local:</span><span class="text-primary">Active</span><span class="text-outline-variant">|</span><span class="text-on-surface-variant">Deterministic:</span><span class="text-primary">0-Token</span></div><div class="flex items-center gap-space-sm"><button class="h-8 px-2.5 flex items-center gap-1 rounded bg-surface-container-high border border-outline-variant/30 text-on-surface-variant hover:text-on-surface font-code-sm text-code-sm transition-colors"><span class="material-symbols-outlined text-[16px]">code</span><span>API Docs</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<div class="relative w-full overflow-hidden px-space-lg py-space-lg bg-surface">
+<!-- Atmospheric subtle glow -->
+<div class="absolute -top-32 -left-20 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
+<div class="absolute top-1/2 -right-40 w-[30rem] h-[30rem] rounded-full bg-secondary/5 blur-[100px] pointer-events-none"></div>
+<div class="max-w-[1720px] mx-auto flex flex-col gap-space-lg relative z-10">
+<!-- Top Metric Banner & Header Block -->
+<section class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md bg-surface-container-low p-space-md rounded-xl">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-space-sm">
+<span class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Task Execution History</span>
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container-highest text-primary font-code-sm text-code-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+              LIVE LOG STREAM
+            </span>
+</div>
+<p class="font-code-md text-code-md text-on-surface-variant flex items-center gap-2">
+<span>1,428 Executed Tasks</span>
+<span class="text-outline-variant">•</span>
+<span class="text-primary font-medium">89.2% Local / Zero-Token Deterministic</span>
+<span class="text-outline-variant">•</span>
+<span class="text-on-surface-variant/80">Avg Latency: 44.8ms</span>
+</p>
+</div>
+<!-- Telemetry Pill Indicators -->
+<div class="flex items-center flex-wrap gap-space-sm">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-high">
+<span class="material-symbols-outlined text-[16px] text-primary">memory</span>
+<div class="flex flex-col leading-none">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ENGINE CACHE</span>
+<span class="font-code-sm text-code-sm text-on-surface font-semibold">94.1% HIT</span>
+</div>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-high">
+<span class="material-symbols-outlined text-[16px] text-secondary">token</span>
+<div class="flex flex-col leading-none">
+<span class="font-label-sm text-label-sm text-on-surface-variant">SAVED TOKENS</span>
+<span class="font-code-sm text-code-sm text-secondary font-semibold">418.5k tk</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5">
+<button class="h-9 px-3 rounded-lg bg-surface-container-highest hover:bg-surface-bright text-on-surface flex items-center gap-1.5 font-code-sm text-code-sm transition-all active:scale-[0.98]" id="export-jsonl-btn">
+<span class="material-symbols-outlined text-[16px]">file_download</span>
+<span>Export JSONL</span>
+</button>
+<button class="h-9 px-3 rounded-lg bg-surface-container-highest hover:bg-error-container hover:text-on-error-container text-on-surface-variant flex items-center gap-1.5 font-code-sm text-code-sm transition-all" id="clear-cache-btn">
+<span class="material-symbols-outlined text-[16px]">mop</span>
+<span>Clear Cache</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Advanced Filter & Search Terminal Bar -->
+<section class="flex flex-col gap-space-sm bg-surface-container p-space-md rounded-xl">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm items-center">
+<!-- Search input -->
+<div class="md:col-span-4 relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-[18px] text-on-surface-variant/70">search</span>
+<input class="w-full h-10 pl-9 pr-3 rounded-lg bg-surface-container-lowest text-on-surface font-code-md text-code-md placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-1 focus:ring-primary caret-primary" id="search-input" placeholder="Search prompt, query ID (e.g. tsk_8f99c01d)..." type="text"/>
+</div>
+<!-- Category filter -->
+<div class="md:col-span-2">
+<div class="relative">
+<select class="w-full h-10 px-3 bg-surface-container-lowest text-on-surface font-code-sm text-code-sm rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary pr-8" id="category-filter">
+<option value="all">Category: All</option>
+<option value="math">Mathematical</option>
+<option value="ner">Entity Recognition</option>
+<option value="sentiment">Sentiment Analysis</option>
+<option value="code">Code Debugging</option>
+<option value="logical">Logical Reasoning</option>
+<option value="summary">Summarization</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-2.5 top-2.5 text-[16px] text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<!-- Solver filter -->
+<div class="md:col-span-2">
+<div class="relative">
+<select class="w-full h-10 px-3 bg-surface-container-lowest text-on-surface font-code-sm text-code-sm rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary pr-8" id="solver-filter">
+<option value="all">Solver: All Engines</option>
+<option value="python">Python Deterministic</option>
+<option value="regex">Lightweight Regex/Spacy</option>
+<option value="distilbert">Local DistilBERT</option>
+<option value="llm">Local LLM</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-2.5 top-2.5 text-[16px] text-on-surface-variant">tune</span>
+</div>
+</div>
+<!-- Status filter -->
+<div class="md:col-span-2">
+<div class="relative">
+<select class="w-full h-10 px-3 bg-surface-container-lowest text-on-surface font-code-sm text-code-sm rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary pr-8" id="status-filter">
+<option value="all">Status: All (200, Cached, Err)</option>
+<option value="200">200 OK (Clean)</option>
+<option value="cached">Cached (0ms)</option>
+<option value="error">Error Only</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-2.5 top-2.5 text-[16px] text-on-surface-variant">filter_list</span>
+</div>
+</div>
+<!-- Time range selector -->
+<div class="md:col-span-2">
+<div class="relative">
+<select class="w-full h-10 px-3 bg-surface-container-lowest text-on-surface font-code-sm text-code-sm rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary pr-8" id="time-filter">
+<option value="24h">Range: Last 24 Hours</option>
+<option value="6h">Last 6 Hours</option>
+<option value="7d">Last 7 Days</option>
+<option value="all">Full Retention (30d)</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-2.5 top-2.5 text-[16px] text-on-surface-variant">schedule</span>
+</div>
+</div>
+</div>
+<!-- Filter Tags Row & Quick Presets -->
+<div class="flex items-center justify-between pt-1 flex-wrap gap-2 text-on-surface-variant">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant/60">ACTIVE FILTERS:</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-high font-code-sm text-code-sm text-primary">
+              route:all
+              <span class="material-symbols-outlined text-[12px] cursor-pointer hover:text-on-surface">close</span>
+</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-high font-code-sm text-code-sm text-on-surface">
+              window:24h
+            </span>
+<button class="text-xs font-code-sm text-primary underline underline-offset-2 ml-1 hover:text-primary-fixed" id="reset-filters">Reset Filters</button>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface-variant/70">Showing <span class="text-on-surface font-bold" id="filtered-count">6</span> of 1,428 executions</span>
+</div>
+</section>
+<!-- Main Layout: Table Area & Inspector split-panel view -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-lg items-start">
+<!-- Table Column (7 or 8 columns on large desktop) -->
+<div class="xl:col-span-7 flex flex-col gap-space-sm">
+<!-- Table Header Strip -->
+<div class="grid grid-cols-12 px-space-md py-2 text-on-surface-variant/70 font-label-sm text-label-sm uppercase tracking-wider bg-surface-container-low rounded-t-lg select-none">
+<div class="col-span-5 flex items-center gap-1">Task Query & Trace ID</div>
+<div class="col-span-3 flex items-center gap-1">Target Engine</div>
+<div class="col-span-2 text-right">Metrics</div>
+<div class="col-span-2 text-right">Time & Code</div>
+</div>
+<!-- Execution Rows Container -->
+<div class="flex flex-col gap-1.5" id="task-rows-container">
+<!-- ROW 1 -->
+<div class="task-row group cursor-pointer p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all relative overflow-hidden" data-category="math" data-duration="2.14ms" data-engine="Python Deterministic (AST Sandbox)" data-fingerprint="sha256:d89e24fa889c" data-id="tsk_8f99c01d" data-output='{"product": 8000, "sqrt": 89.4427190999916, "precision": "float64"}' data-query="Calculate 125 × 64 and find its square root" data-reasoning="AST parser matched purely arithmetic expressions: `(125 * 64) ** 0.5`. Direct sandbox bypass routing executed. High confidence (0.999)." data-solver="python" data-status="200" data-tokens="0">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="grid grid-cols-12 gap-2 items-center">
+<div class="col-span-12 md:col-span-5 flex flex-col min-w-0 pr-2">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-code-sm text-code-sm font-semibold text-primary">tsk_8f99c01d</span>
+<span class="inline-flex px-1.5 py-0.2 rounded bg-secondary-container/20 text-secondary font-label-sm text-label-sm uppercase">Math</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface truncate group-hover:text-primary transition-colors">
+                    Calculate 125 × 64 and find its square root
+                  </span>
+</div>
+<div class="col-span-6 md:col-span-3 flex flex-col justify-center">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-primary-container/20 text-primary font-code-sm text-code-sm font-medium w-max">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    Python Deterministic
+                  </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/70 mt-0.5">AST Bytecode Node</span>
+</div>
+<div class="col-span-3 md:col-span-2 text-right flex flex-col">
+<span class="font-code-sm text-code-sm text-on-surface font-semibold">2.14 ms</span>
+<span class="font-code-sm text-code-sm text-primary">0 Tokens</span>
+</div>
+<div class="col-span-3 md:col-span-2 text-right flex flex-col items-end">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-label-sm font-mono">
+                    200 OK
+                  </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/60 mt-0.5">2m ago</span>
+</div>
+</div>
+</div>
+<!-- ROW 2 -->
+<div class="task-row group cursor-pointer p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all relative overflow-hidden" data-category="ner" data-duration="18.6ms" data-engine="Lightweight Regex / FastNER SpaCy" data-fingerprint="sha256:4b910ca831e0" data-id="tsk_7e44b82a" data-output='[{"entity": "Synthetix AI", "label": "ORG"}, {"entity": "$42M Series B", "label": "FUNDING_ROUND"}, {"investor": "Sequoia Capital", "label": "ORG"}]' data-query="Extract orgs & funding rounds from tech crunch snippet" data-reasoning="Pattern recognizer found explicit funding regex `(\$\d+M\s(Series\s[A-Z]|Seed))`. Fast SpaCy POS pipeline bypassed generative LLM." data-solver="regex" data-status="200" data-tokens="0">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-surface-tint opacity-50"></div>
+<div class="grid grid-cols-12 gap-2 items-center">
+<div class="col-span-12 md:col-span-5 flex flex-col min-w-0 pr-2">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-code-sm text-code-sm font-semibold text-on-surface-variant">tsk_7e44b82a</span>
+<span class="inline-flex px-1.5 py-0.2 rounded bg-surface-container-high text-tertiary-fixed font-label-sm text-label-sm uppercase">NER Extraction</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface truncate group-hover:text-primary transition-colors">
+                    Extract orgs & funding rounds from tech crunch snippet
+                  </span>
+</div>
+<div class="col-span-6 md:col-span-3 flex flex-col justify-center">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-code-sm text-code-sm font-medium w-max">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                    Regex / SpaCy
+                  </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/70 mt-0.5">Rule-Based Local</span>
+</div>
+<div class="col-span-3 md:col-span-2 text-right flex flex-col">
+<span class="font-code-sm text-code-sm text-on-surface font-semibold">18.60 ms</span>
+<span class="font-code-sm text-code-sm text-primary">0 Tokens</span>
+</div>
+<div class="col-span-3 md:col-span-2 text-right flex flex-col items-end">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-label-sm font-mono">
+                    200 OK
+                  </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/60 mt-0.5">14m ago</span>
+</div>
+</div>
+</div>
+<!-- ROW 3 -->
+<div class="task-row group cursor-pointer p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all relative overflow-hidden" data-category="sentiment" data-duration="28.2ms" data-engine="Local DistilBERT ONNX Runtime" data-fingerprint="sha256:7f08cd1923ab" data-id="tsk_6d33a10f" data-output='{"sentiment": "mixed_negative", "scores": {"positive": 0.38, "neutral": 0.08, "negative": 0.54}, "aspects": [{"target": "delivery", "polarity": "pos"}, {"target": "packaging", "polarity": "neg"}]}' data-query='Customer review sentiment: "Fast delivery but packaging damaged"' data-reasoning="Sentence contains conjunction `but` with opposing polarity. Dispatched to quantized ONNX sentiment classification graph." data-solver="distilbert" data-status="200" data-tokens="0">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-surface-container-highest"></div>
+<div class="grid grid-cols-12 gap-2 items-center">
+<div class="col-span-12 md:col-span-5 flex flex-col min-w-0 pr-2">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-code-sm text-code-sm font-semibold text-on-surface-variant">tsk_6d33a10f</span>
+<span class="inline-flex px-1.5 py-0.2 rounded bg-surface-container-high text-secondary-fixed font-label-sm text-label-sm uppercase">Sentiment</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface truncate group-hover:text-primary transition-colors">
+                    Customer review sentiment: "Fast delivery but packaging damaged"
+                  </span>
+</div>
+<div class="col-span-6 md:col-span-3 flex flex-col justify-center">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-code-sm text-code-sm font-medium w-max">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                    Local DistilBERT
+                  </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/70 mt-0.5">ONNX Int8 Embedded</span>
+</div>
+<div class="col-span-3 md:col-span-2 text-right flex flex-col">
+<span class="font-code-sm text-code-sm text-on-surface font-semibold">28.20 ms</span>
+<span class="font-code-sm text-code-sm text-primary">0 Tokens</span>
+</div>
+<div class="col-span-3 md:col-span-2 text-right flex flex-col items-end">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-label-sm font-mono">
+                    200 OK
+                  </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/60 mt-0.5">1h ago</span>
+</div>
+</div>
+</div>
+<!-- ROW 4 -->
+<div class="task-row group cursor-pointer p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all relative overflow-hidden" data-category="code" data-duration="210.4ms" data-engine="Local CodeLlama 7B (GGUF Q4_K_M)" data-fingerprint="sha256:91bc823da71f" data-id="tsk_5c2299de" data-output="def fibonacci(n, memo={}):\n    if n in memo:\n        return memo[n]\n    if n <= 1:\n        return n\n    memo[n] = fibonacci(n - 1, memo) + fibonacci(n - 2, memo)\n    return memo[n]" data-query="Def fibonacci(n): fix recursive recursion depth error" data-reasoning="AST syntax verification detected unbound recursion depth. Elevated to quantized CodeLlama instance via local llama.cpp backend." data-solver="llm" data-status="200" data-tokens="142">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="grid grid-cols-12 gap-2 items-center">
+<div class="col-span-12 md:col-span-5 flex flex-col min-w-0 pr-2">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-code-sm text-code-sm font-semibold text-secondary">tsk_5c2299de</span>
+<span class="inline-flex px-1.5 py-0.2 rounded bg-surface-container-high text-primary font-label-sm text-label-sm uppercase">Code Refactor</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface truncate group-hover:text-primary transition-colors">
+                    Def fibonacci(n): fix recursive recursion depth error
+                  </span>
+</div>
+<div class="col-span-6 md:col-span-3 flex flex-col justify-center">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-secondary-container/20 text-secondary font-code-sm text-code-sm font-medium w-max">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                    CodeLlama 7B
+                  </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/70 mt-0.5">Quantized 4-bit</span>
+</div>
+<div class="col-span-3 md:col-span-2 text-right flex flex-col">
+<span class="font-code-sm text-code-sm text-on-surface font-semibold">210.4 ms</span>
+<span class="font-code-sm text-code-sm text-secondary">142 Tokens</span>
+</div>
+<div class="col-span-3 md:col-span-2 text-right flex flex-col items-end">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-label-sm font-mono">
+                    200 OK
+                  </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/60 mt-0.5">3h ago</span>
+</div>
+</div>
+</div>
+<!-- ROW 5 -->
+<div class="task-row group cursor-pointer p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all relative overflow-hidden" data-category="logical" data-duration="1.8ms" data-engine="Python Deterministic (SimdJson + Repair)" data-fingerprint="sha256:1a87c12f008e" data-id="tsk_4b1188cd" data-output='{"status": "repaired", "trailing_commas_removed": 4, "escaped_chars_fixed": true, "valid_keys": 18}' data-query="Parse malformed JSON payload from gateway" data-reasoning="Structural syntax error repair completed through dirtyjson sanitizer. Zero generative LLM inference overhead." data-solver="python" data-status="200" data-tokens="0">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="grid grid-cols-12 gap-2 items-center">
+<div class="col-span-12 md:col-span-5 flex flex-col min-w-0 pr-2">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-code-sm text-code-sm font-semibold text-primary">tsk_4b1188cd</span>
+<span class="inline-flex px-1.5 py-0.2 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase">JSON Parser</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface truncate group-hover:text-primary transition-colors">
+                    Parse malformed JSON payload from gateway
+                  </span>
+</div>
+<div class="col-span-6 md:col-span-3 flex flex-col justify-center">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-primary-container/20 text-primary font-code-sm text-code-sm font-medium w-max">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    Python Deterministic
+                  </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/70 mt-0.5">Fast SIMD Engine</span>
+</div>
+<div class="col-span-3 md:col-span-2 text-right flex flex-col">
+<span class="font-code-sm text-code-sm text-on-surface font-semibold">1.80 ms</span>
+<span class="font-code-sm text-code-sm text-primary">0 Tokens</span>
+</div>
+<div class="col-span-3 md:col-span-2 text-right flex flex-col items-end">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-label-sm font-mono">
+                    200 OK
+                  </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/60 mt-0.5">5h ago</span>
+</div>
+</div>
+</div>
+<!-- ROW 6 -->
+<div class="task-row group cursor-pointer p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all relative overflow-hidden" data-category="summary" data-duration="340.1ms" data-engine="Local LLM (Mistral 7B Instruct Int4)" data-fingerprint="sha256:56cc93e1104d" data-id="tsk_3a0077bc" data-output="SUMMARY:\n- Root Cause: OOMKilled event on ingress-nginx-controller pod due to memory leak in SSL cert reload daemon.\n- Blast Radius: 18 microservices experienced 502 Bad Gateway timeouts for 4m 12s.\n- Mitigation: Node pool recycled, heap limit increased to 2GiB, hotfix cherry-picked." data-query="Summarize Kubernetes cluster incident report" data-reasoning="Multi-paragraph unstructured logging exceeds extractive NER threshold. Routed to local Mistral 7B context window." data-solver="llm" data-status="200" data-tokens="388">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="grid grid-cols-12 gap-2 items-center">
+<div class="col-span-12 md:col-span-5 flex flex-col min-w-0 pr-2">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-code-sm text-code-sm font-semibold text-secondary">tsk_3a0077bc</span>
+<span class="inline-flex px-1.5 py-0.2 rounded bg-surface-container-high text-secondary-fixed font-label-sm text-label-sm uppercase">Summarization</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface truncate group-hover:text-primary transition-colors">
+                    Summarize Kubernetes cluster incident report
+                  </span>
+</div>
+<div class="col-span-6 md:col-span-3 flex flex-col justify-center">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-secondary-container/20 text-secondary font-code-sm text-code-sm font-medium w-max">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                    Mistral 7B Q4
+                  </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/70 mt-0.5">Heavy Generative</span>
+</div>
+<div class="col-span-3 md:col-span-2 text-right flex flex-col">
+<span class="font-code-sm text-code-sm text-on-surface font-semibold">340.10 ms</span>
+<span class="font-code-sm text-code-sm text-secondary">388 Tokens</span>
+</div>
+<div class="col-span-3 md:col-span-2 text-right flex flex-col items-end">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-label-sm font-mono">
+                    200 OK
+                  </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/60 mt-0.5">Yesterday</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty search filter fallback (hidden by default) -->
+<div class="hidden flex-col items-center justify-center p-space-xl bg-surface-container-low rounded-xl text-center" id="empty-state">
+<span class="material-symbols-outlined text-[48px] text-on-surface-variant/40 mb-2">manage_search</span>
+<span class="font-headline-md text-headline-md text-on-surface">No matching execution traces</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant/70 max-w-sm mt-1">
+              Adjust your filters or search keywords. You can reset filters to show active session traces.
+            </p>
+</div>
+<!-- Pagination Bar -->
+<div class="flex items-center justify-between px-space-md py-space-sm bg-surface-container-low rounded-b-xl text-on-surface-variant">
+<span class="font-code-sm text-code-sm">Page 1 of 24 (50 logs/page)</span>
+<div class="flex items-center gap-1">
+<button class="h-8 px-2.5 rounded bg-surface-container-high text-on-surface-variant/50 cursor-not-allowed font-code-sm text-code-sm flex items-center">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+</button>
+<button class="h-8 w-8 rounded bg-primary text-on-primary font-code-sm text-code-sm font-semibold flex items-center justify-center">
+                1
+              </button>
+<button class="h-8 w-8 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-code-sm text-code-sm flex items-center justify-center">
+                2
+              </button>
+<button class="h-8 w-8 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-code-sm text-code-sm flex items-center justify-center">
+                3
+              </button>
+<span class="px-1 text-on-surface-variant/40">...</span>
+<button class="h-8 px-2.5 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-code-sm text-code-sm flex items-center">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Sticky Inspector & Execution Drawer (Right Column: 5 Cols) -->
+<aside class="xl:col-span-5 sticky top-20 flex flex-col gap-space-md bg-surface-container p-space-md rounded-xl">
+<!-- Inspector Header -->
+<div class="flex items-center justify-between pb-space-sm bg-surface-container">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">troubleshoot</span>
+<span class="font-headline-md text-headline-md text-on-surface">Execution Trace Inspector</span>
+</div>
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded bg-surface-container-highest text-primary font-mono font-medium" id="inspector-id-chip">
+              tsk_8f99c01d
+            </span>
+</div>
+<!-- Metadata Grid -->
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="flex flex-col p-2.5 rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">ROUTED SOLVER</span>
+<span class="font-code-sm text-code-sm text-on-surface font-semibold truncate mt-0.5" id="inspector-engine">Python Deterministic (AST Sandbox)</span>
+</div>
+<div class="flex flex-col p-2.5 rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">EXECUTION DURATION</span>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="font-code-sm text-code-sm text-primary font-semibold" id="inspector-time">2.14 ms</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.2 rounded bg-surface-container-high text-on-surface-variant" id="inspector-tokens">0 tk</span>
+</div>
+</div>
+</div>
+<!-- Routing Decision Engine Flow Card -->
+<div class="flex flex-col gap-2 p-space-sm rounded-lg bg-surface-container-lowest">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-mono flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary">alt_route</span>
+                ROUTING ARBITRATION LOGIC
+              </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/50 font-mono" id="inspector-fingerprint">sha256:d89e24fa889c</span>
+</div>
+<p class="font-code-sm text-code-sm text-on-surface-variant bg-surface-container-high/40 p-2.5 rounded" id="inspector-reasoning">
+              AST parser matched purely arithmetic expressions: `(125 * 64) ** 0.5`. Direct sandbox bypass routing executed. High confidence (0.999).
+            </p>
+</div>
+<!-- Input Payload Inspector -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-mono">INPUT QUERY / PAYLOAD</span>
+<button class="text-on-surface-variant hover:text-primary font-code-sm text-code-sm flex items-center gap-1 transition-colors" id="copy-input-btn">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+<span>Copy</span>
+</button>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-lowest font-body-md text-body-md text-on-surface overflow-x-auto select-all">
+<span id="inspector-input">Calculate 125 × 64 and find its square root</span>
+</div>
+</div>
+<!-- Output Inspector Box with Monospace JSON -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-mono">PAYLOAD RESPONSE OUTPUT</span>
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm text-primary font-mono">application/json</span>
+<button class="text-on-surface-variant hover:text-primary font-code-sm text-code-sm flex items-center gap-1 transition-colors" id="copy-output-btn">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+<span>Copy JSON</span>
+</button>
+</div>
+</div>
+<pre class="p-3 rounded-lg bg-surface-container-lowest text-tertiary-fixed font-code-sm text-code-sm overflow-x-auto max-h-48 leading-relaxed font-mono whitespace-pre-wrap"><code id="inspector-output">{
+  "product": 8000,
+  "sqrt": 89.4427190999916,
+  "precision": "float64"
+}</code></pre>
+</div>
+<!-- Inspector Action Buttons -->
+<div class="flex items-center gap-space-sm pt-space-xs">
+<button class="flex-1 h-10 px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary font-headline-md text-body-md flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-md" id="rerun-btn">
+<span class="material-symbols-outlined text-[18px]">replay</span>
+<span>Re-run In Workspace</span>
+</button>
+<button class="h-10 px-3 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-code-sm text-code-sm flex items-center gap-1.5 transition-colors" id="share-curl-btn">
+<span class="material-symbols-outlined text-[16px]">terminal</span>
+<span>Copy cURL</span>
+</button>
+</div>
+</aside>
+</div>
+<!-- Subtle System Persistence Footer Indicator -->
+<footer class="mt-space-md p-space-md rounded-xl bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-space-sm text-on-surface-variant/80">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">database</span>
+<span class="font-code-sm text-code-sm">
+            Local session cache storage active (IndexedDB). Engine configured for offline deterministic operation.
+          </span>
+</div>
+<div class="flex items-center gap-space-md">
+<span class="font-code-sm text-code-sm text-on-surface-variant/60">
+            Backend: SQLite at <code class="text-on-surface font-mono">~/.cogniflow/history.db</code>
+</span>
+<a class="font-code-sm text-code-sm text-primary hover:underline flex items-center gap-1" data-path="settings-status" href="#">
+<span>Configure Storage</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</footer>
+</div>
+</div>
+<!-- Inline Micro-Interactions Script -->
+<script>
+    (function () {
+      const rows = document.querySelectorAll('.task-row');
+      const inspectorIdChip = document.getElementById('inspector-id-chip');
+      const inspectorEngine = document.getElementById('inspector-engine');
+      const inspectorTime = document.getElementById('inspector-time');
+      const inspectorTokens = document.getElementById('inspector-tokens');
+      const inspectorReasoning = document.getElementById('inspector-reasoning');
+      const inspectorFingerprint = document.getElementById('inspector-fingerprint');
+      const inspectorInput = document.getElementById('inspector-input');
+      const inspectorOutput = document.getElementById('inspector-output');
+      const searchInput = document.getElementById('search-input');
+      const categoryFilter = document.getElementById('category-filter');
+      const solverFilter = document.getElementById('solver-filter');
+      const statusFilter = document.getElementById('status-filter');
+      const filteredCountEl = document.getElementById('filtered-count');
+      const emptyStateEl = document.getElementById('empty-state');
+      const resetFiltersBtn = document.getElementById('reset-filters');
+      const rerunBtn = document.getElementById('rerun-btn');
+      const copyOutputBtn = document.getElementById('copy-output-btn');
+      const copyInputBtn = document.getElementById('copy-input-btn');
+      const clearCacheBtn = document.getElementById('clear-cache-btn');
+      const exportJsonlBtn = document.getElementById('export-jsonl-btn');
+
+      // Selection state highlight
+      function selectRow(row) {
+        rows.forEach(r => {
+          r.classList.remove('bg-surface-container', 'ring-1', 'ring-primary/40');
+          r.classList.add('bg-surface-container-low');
+        });
+        row.classList.remove('bg-surface-container-low');
+        row.classList.add('bg-surface-container', 'ring-1', 'ring-primary/40');
+
+        // Populate inspector
+        const dataset = row.dataset;
+        inspectorIdChip.textContent = dataset.id;
+        inspectorEngine.textContent = dataset.engine;
+        inspectorTime.textContent = dataset.duration;
+        inspectorTokens.textContent = dataset.tokens + ' tk';
+        inspectorReasoning.textContent = dataset.reasoning;
+        inspectorFingerprint.textContent = dataset.fingerprint;
+        inspectorInput.textContent = dataset.query;
+
+        // format json nicely if valid
+        try {
+          const parsed = JSON.parse(dataset.output);
+          inspectorOutput.textContent = JSON.stringify(parsed, null, 2);
+        } catch (e) {
+          inspectorOutput.textContent = dataset.output;
+        }
+      }
+
+      // Initial active selection
+      if (rows.length > 0) {
+        selectRow(rows[0]);
+      }
+
+      rows.forEach(row => {
+        row.addEventListener('click', () => selectRow(row));
+      });
+
+      // Filter handling
+      function applyFilters() {
+        const query = (searchInput.value || '').toLowerCase().trim();
+        const cat = categoryFilter.value;
+        const solver = solverFilter.value;
+        const status = statusFilter.value;
+
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+          const rowText = (row.dataset.query + ' ' + row.dataset.id).toLowerCase();
+          const matchesQuery = !query || rowText.includes(query);
+          const matchesCat = (cat === 'all') || (row.dataset.category === cat);
+          const matchesSolver = (solver === 'all') || (row.dataset.solver === solver);
+          const matchesStatus = (status === 'all') || (row.dataset.status === status);
+
+          if (matchesQuery && matchesCat && matchesSolver && matchesStatus) {
+            row.style.display = 'block';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+
+        filteredCountEl.textContent = visibleCount;
+        if (visibleCount === 0) {
+          emptyStateEl.classList.remove('hidden');
+          emptyStateEl.classList.add('flex');
+        } else {
+          emptyStateEl.classList.add('hidden');
+          emptyStateEl.classList.remove('flex');
+        }
+      }
+
+      searchInput.addEventListener('input', applyFilters);
+      categoryFilter.addEventListener('change', applyFilters);
+      solverFilter.addEventListener('change', applyFilters);
+      statusFilter.addEventListener('change', applyFilters);
+
+      resetFiltersBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        searchInput.value = '';
+        categoryFilter.value = 'all';
+        solverFilter.value = 'all';
+        statusFilter.value = 'all';
+        applyFilters();
+      });
+
+      // Feedback helpers
+      function showTemporaryToast(btn, label) {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `<span class="material-symbols-outlined text-[16px] text-primary">check</span><span>Done</span>`;
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+        }, 1400);
+      }
+
+      copyOutputBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(inspectorOutput.textContent);
+        showTemporaryToast(copyOutputBtn);
+      });
+
+      copyInputBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(inspectorInput.textContent);
+        showTemporaryToast(copyInputBtn);
+      });
+
+      rerunBtn.addEventListener('click', () => {
+        const query = inspectorInput.textContent.trim();
+        showTemporaryToast(rerunBtn);
+        console.log("Rerunning task:", query);
+      });
+
+      clearCacheBtn.addEventListener('click', () => {
+        if (confirm("Clear local ephemeral task cache for this session?")) {
+          showTemporaryToast(clearCacheBtn);
+        }
+      });
+
+      exportJsonlBtn.addEventListener('click', () => {
+        const dataArr = Array.from(rows).map(r => ({
+          task_id: r.dataset.id,
+          query: r.dataset.query,
+          solver: r.dataset.engine,
+          duration: r.dataset.duration,
+          tokens: r.dataset.tokens,
+          response: r.dataset.output
+        }));
+        const blob = new Blob([dataArr.map(d => JSON.stringify(d)).join('\n')], { type: 'application/x-jsonlines' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cogniflow_export_${Date.now()}.jsonl`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    })();
+  </script>
+</div></main></div></body></html>

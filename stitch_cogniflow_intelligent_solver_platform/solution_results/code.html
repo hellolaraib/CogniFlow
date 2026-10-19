@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-fixed-variant": "#005320", "on-secondary-fixed": "#271900", "tertiary-fixed-dim": "#62df7d", "surface-bright": "#2e3b43", "inverse-surface": "#d7e4ef", "surface": "#08151c", "primary-fixed-dim": "#4ae176", "tertiary": "#63e07e", "surface-variant": "#2a363f", "on-secondary": "#422c00", "on-tertiary-fixed": "#002109", "surface-tint": "#4ae176", "secondary-fixed": "#ffdea9", "on-surface": "#d7e4ef", "on-primary-fixed": "#002109", "background": "#08151c", "outline-variant": "#3d4a3d", "primary": "#4be277", "surface-container-lowest": "#041017", "on-secondary-container": "#392600", "surface-container": "#152129", "inverse-primary": "#006e2f", "on-primary": "#003915", "surface-dim": "#08151c", "on-secondary-fixed-variant": "#5f4100", "surface-container-highest": "#2a363f", "tertiary-container": "#44c365", "surface-container-low": "#111d25", "on-tertiary-container": "#004b1d", "on-tertiary": "#003914", "on-background": "#d7e4ef", "inverse-on-surface": "#26323a", "secondary-container": "#bd8707", "error-container": "#93000a", "on-error": "#690005", "on-surface-variant": "#bccbb9", "on-primary-container": "#004b1e", "secondary": "#fabc45", "tertiary-fixed": "#7ffc97", "surface-container-high": "#1f2c33", "on-primary-fixed-variant": "#005321", "on-error-container": "#ffdad6", "error": "#ffb4ab", "primary-container": "#22c55e", "primary-fixed": "#6bff8f", "secondary-fixed-dim": "#fabc45", "outline": "#869585" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "gutter-lg": "1.5rem", "space-xl": "2rem", "space-sm": "0.5rem", "space-md": "1rem", "margin-lg": "2rem", "gutter": "1rem", "space-xs": "0.25rem", "space-lg": "1.5rem", "margin": "1rem" }, "fontFamily": { "headline-md": ["Inter"], "code-lg": ["JetBrains Mono"], "headline-xl-mobile": ["Inter"], "code-sm": ["JetBrains Mono"], "headline-lg": ["Inter"], "label-sm": ["JetBrains Mono"], "body-sm": ["Inter"], "label-md": ["JetBrains Mono"], "headline-xl": ["Inter"], "body-md": ["Inter"], "body-lg": ["Inter"], "code-md": ["JetBrains Mono"] }, "fontSize": { "headline-md": ["18px", { "lineHeight": "24px", "fontWeight": "600" }], "code-lg": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "headline-xl-mobile": ["26px", { "lineHeight": "32px", "fontWeight": "600" }], "code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }], "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }], "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "code-md": ["12px", { "lineHeight": "16px", "fontWeight": "400" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low border-r border-outline-variant/30 z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-16 px-space-md border-b border-outline-variant/20 flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="CogniFlow Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XmlGo1Zb0saAtkH77eKeBJuVE_fv6VCK1n3ZFQbG1MtQb4HwcohUt21ks8-wN3gyDMgjbLnRexaX15hxpELPRb4xyFtjMBnux690IsgM1-qbK6_e3o1Ks6jpdeqD9Px70YsjwWW4R1VCRCdhyarJfbDeRYReIrSZ4NC344X_wrd3sLQV-nDi_0Kh6RYiOmuJ2Miqas0mlU-FJ_elWYcSryBzR59xqzEy-VVHLixNQiisR8ronBAow3jw"/><span class="font-headline-md text-headline-md tracking-tight text-on-surface">CogniFlow</span></div><span class="font-label-sm text-label-sm font-semibold uppercase px-space-xs py-0.5 rounded bg-surface-container-highest text-primary border border-primary/20">v0.1-alpha</span></div><div class="p-space-md"><button class="w-full flex items-center justify-center gap-space-xs py-space-sm px-space-md bg-surface-container-high border border-primary/40 rounded-xl text-primary font-headline-md text-body-md hover:bg-primary-container hover:text-on-primary-container transition-all shadow-[0_0_12px_rgba(75,226,119,0.15)] group"><span class="material-symbols-outlined text-[18px] group-hover:rotate-90 transition-transform">add</span><span>New Task</span><span class="ml-auto font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-primary-container font-mono opacity-60">⌘N</span></button></div><nav class="flex flex-col gap-1 px-space-sm" data-active-classes="bg-surface-container-high text-primary border border-primary/20 font-semibold shadow-inner"><a aria-current="page" class="flex items-center justify-between px-space-md py-space-sm rounded-lg transition-all bg-surface-container-high text-primary border border-primary/20 font-semibold shadow-inner" data-path="workspace" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">terminal</span><span class="font-body-md text-body-md">Workspace</span></div><span class="font-code-sm text-code-sm text-on-surface-variant/70">⌥1</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="task-history" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">history</span><span class="font-body-md text-body-md">Task History</span></div><span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant">14</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="solver-overview" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">hub</span><span class="font-body-md text-body-md">Solver Overview</span></div><span class="font-code-sm text-code-sm text-on-surface-variant/70">⌥3</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="settings-status" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-body-md text-body-md">Settings & Status</span></div><span class="material-symbols-outlined text-[16px] text-on-surface-variant/50">circle</span></a></nav></div><div class="p-space-md border-t border-outline-variant/20 flex flex-col gap-space-sm bg-surface-container-lowest/50"><div class="flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span><span class="font-code-sm text-code-sm text-on-surface">Engine: Ready</span></div><span class="font-code-sm text-code-sm text-primary uppercase bg-primary-container/10 border border-primary/20 px-1 rounded">Deterministic</span></div><div class="flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="inline-flex h-1.5 w-1.5 rounded-full bg-primary"></span><span class="font-code-sm text-code-sm text-on-surface-variant">API: Connected</span></div><span class="font-code-sm text-code-sm text-on-surface-variant/70">FastAPI 2ms</span></div><div class="pt-space-xs border-t border-outline-variant/10 flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant/60">CogniFlow v0.1 • Local-First</span><span class="font-label-sm text-label-sm text-primary/80 uppercase">Ready</span></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/90 backdrop-blur-xl border-b border-outline-variant/20 z-40 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-sm text-on-surface-variant font-code-sm text-code-sm"><span class="material-symbols-outlined text-[16px] text-primary">account_tree</span><span class="text-on-surface-variant/60 font-mono">SYS</span><span class="text-on-surface-variant/40">/</span><span class="text-primary font-mono font-medium tracking-wide uppercase">WORKSPACE</span><span class="text-on-surface-variant/40">/</span><span class="text-on-surface font-mono">SOLVER CONSOLE</span></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs px-2.5 py-1 rounded-full bg-surface-container border border-outline-variant/30 text-body-sm"><span class="h-1.5 w-1.5 rounded-full bg-secondary animate-pulse"></span><span class="font-code-sm text-code-sm text-on-surface">Smart Mode</span><span class="font-label-sm text-label-sm text-secondary bg-secondary-container/20 px-1 py-0.2 rounded uppercase">Auto</span></div><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-high border border-outline-variant/20 font-code-sm text-code-sm"><span class="text-on-surface-variant">Local:</span><span class="text-primary">Active</span><span class="text-outline-variant">|</span><span class="text-on-surface-variant">Deterministic:</span><span class="text-primary">0-Token</span></div><div class="flex items-center gap-space-sm"><button class="h-8 px-2.5 flex items-center gap-1 rounded bg-surface-container-high border border-outline-variant/30 text-on-surface-variant hover:text-on-surface font-code-sm text-code-sm transition-colors"><span class="material-symbols-outlined text-[16px]">code</span><span>API Docs</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<div class="p-space-lg lg:p-margin-lg flex flex-col gap-space-lg max-w-[1720px] mx-auto w-full">
+<!-- Top Telemetry Status HUD Strip -->
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md p-space-md rounded-xl bg-surface-container-low shadow-lg relative overflow-hidden">
+<div class="absolute -top-12 -right-12 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex flex-wrap items-center gap-space-md">
+<!-- Success Pill -->
+<div class="flex items-center gap-space-xs px-space-sm py-1 rounded bg-primary/10 text-primary">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="font-label-sm text-label-sm tracking-wider uppercase font-bold">SUCCESS 200 OK</span>
+</div>
+<!-- Task ID & Hash Tag -->
+<div class="flex items-center gap-space-xs font-code-sm text-code-sm text-on-surface-variant">
+<span class="text-on-surface-variant/40">ID:</span>
+<span class="text-on-surface select-all">tsk_8f99c01d</span>
+<span class="text-on-surface-variant/30">/</span>
+<span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded font-label-sm text-label-sm uppercase font-semibold">Mathematical Reasoning</span>
+</div>
+<div class="hidden sm:flex items-center gap-space-xs font-code-sm text-code-sm px-2 py-0.5 rounded bg-surface-container">
+<span class="material-symbols-outlined text-[15px] text-primary">memory</span>
+<span class="text-on-surface-variant">Deterministic Python</span>
+<span class="text-on-surface-variant/50 font-label-sm text-label-sm">(SymPy/eval-sandbox)</span>
+</div>
+</div>
+<!-- Right Performance Metrics Bento Strip -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-sm items-center">
+<div class="flex flex-col px-space-sm py-1 rounded bg-surface-container-high">
+<span class="font-label-sm text-label-sm text-on-surface-variant/70 uppercase">Latency</span>
+<div class="flex items-baseline gap-1">
+<span class="font-code-lg text-code-lg text-primary font-bold">2.14 ms</span>
+<span class="font-label-sm text-label-sm text-primary/80"><3ms</span>
+</div>
+</div>
+<div class="flex flex-col px-space-sm py-1 rounded bg-surface-container-high">
+<span class="font-label-sm text-label-sm text-on-surface-variant/70 uppercase">Token Cost</span>
+<div class="flex items-baseline gap-1">
+<span class="font-code-lg text-code-lg text-tertiary font-bold">0 Tokens</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant/60">Local</span>
+</div>
+</div>
+<div class="flex flex-col px-space-sm py-1 rounded bg-surface-container-high">
+<span class="font-label-sm text-label-sm text-on-surface-variant/70 uppercase">Memory RSS</span>
+<span class="font-code-lg text-code-lg text-on-surface font-semibold">14.2 MB</span>
+</div>
+<div class="flex flex-col px-space-sm py-1 rounded bg-surface-container-high">
+<span class="font-label-sm text-label-sm text-on-surface-variant/70 uppercase">Cloud Billed</span>
+<span class="font-code-lg text-code-lg text-primary font-bold">$0.0000</span>
+</div>
+</div>
+</div>
+<!-- Collapsible Input Recall Accordion -->
+<details class="group bg-surface-container-low rounded-xl overflow-hidden shadow-sm transition-all" open="">
+<summary class="flex items-center justify-between p-space-md cursor-pointer select-none bg-surface-container-high/60 hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">input</span>
+<span class="font-headline-md text-body-md text-on-surface">Original Submitted Task Query</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/60">48 bytes raw payload</span>
+</div>
+<div class="flex items-center gap-space-sm text-on-surface-variant group-open:rotate-180 transition-transform">
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</div>
+</summary>
+<div class="p-space-md bg-surface-container-lowest/70 flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md flex-1">
+<div class="h-8 w-1 rounded bg-primary"></div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Execution Payload</span>
+<span class="font-headline-md text-headline-md text-on-surface">"Calculate 125 × 64 and find its square root"</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs font-code-sm text-code-sm text-on-surface-variant/80 bg-surface-container px-space-sm py-1 rounded">
+<span class="material-symbols-outlined text-[14px] text-tertiary">check_circle</span>
+<span>Matched Rule #219 (Product + Radix)</span>
+</div>
+</div>
+</details>
+<!-- Main Workspace Section: Result Display + Category Playground -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- Primary Output Card (Left 7 Cols) -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<div class="relative bg-surface-container-low rounded-xl p-space-lg shadow-xl overflow-hidden flex flex-col gap-space-lg">
+<!-- Subtle Glow Matrix Background -->
+<div class="absolute -right-16 -bottom-16 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Card Header & Engine Pill -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">verified</span>
+<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Validated Typed Output</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-primary/15 text-primary font-bold">100% Deterministic</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/60">Type: Tuple[int, float]</span>
+</div>
+</div>
+<!-- Numbers / High Hierarchy Display -->
+<div class="flex flex-col gap-space-sm py-space-sm">
+<div class="flex flex-col sm:flex-row sm:items-baseline gap-space-sm sm:gap-space-md">
+<span class="font-headline-xl text-[64px] leading-tight font-extrabold text-on-surface tracking-tight">8,000</span>
+<span class="font-headline-lg text-headline-lg text-primary font-semibold flex items-center gap-1">
+<span class="text-on-surface-variant font-normal">√ =</span> 89.442719
+              </span>
+</div>
+<div class="h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-full"></div>
+</div>
+</div>
+<!-- Computed Metadata & Narrative Statement -->
+<div class="p-space-md rounded-xl bg-surface-container flex flex-col sm:flex-row items-start sm:items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[22px]">bolt</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<span class="font-headline-md text-body-md text-on-surface font-semibold">Zero External LLM Tokens Consumed</span>
+<p class="font-body-md text-body-sm text-on-surface-variant">
+                Synthesized directly using SymPy numeric eval engine inside an isolated cgroups runtime sandbox. Fully reproducible and drift-free.
+              </p>
+</div>
+</div>
+<!-- Mathematical Step Breakdown Preview -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm font-code-sm text-code-sm">
+<div class="p-space-sm rounded bg-surface-container-lowest flex items-center justify-between">
+<span class="text-on-surface-variant">Operation 1 (Product):</span>
+<span class="text-on-surface font-mono font-bold">125 × 64 = 8,000</span>
+</div>
+<div class="p-space-sm rounded bg-surface-container-lowest flex items-center justify-between">
+<span class="text-on-surface-variant">Operation 2 (Radix):</span>
+<span class="text-on-surface font-mono font-bold">√8000 ≈ 89.442719</span>
+</div>
+</div>
+<!-- Primary Actions Footer Strip -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-sm">
+<div class="flex flex-wrap items-center gap-space-xs">
+<button class="px-space-md py-space-sm rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface hover:text-primary transition-all flex items-center gap-space-xs font-label-md text-label-md" onclick="navigator.clipboard.writeText('8000')">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+<span>Copy Answer</span>
+</button>
+<button class="px-space-md py-space-sm rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface hover:text-primary transition-all flex items-center gap-space-xs font-label-md text-label-md" onclick="downloadJsonPayload()">
+<span class="material-symbols-outlined text-[16px]">file_download</span>
+<span>Export JSON</span>
+</button>
+<button class="px-space-md py-space-sm rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-space-xs font-label-md text-label-md" onclick="toggleAstInspector()">
+<span class="material-symbols-outlined text-[16px]">account_tree</span>
+<span>View Raw AST</span>
+</button>
+</div>
+<button class="px-space-lg py-space-sm rounded-lg bg-primary hover:bg-primary-container text-on-primary font-headline-md text-body-md font-bold transition-all shadow-[0_0_15px_rgba(75,226,119,0.25)] flex items-center gap-space-xs">
+<span>Try Another Task</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Inline Expandable AST Drawer (Hidden by default, triggered by View Raw AST) -->
+<div class="hidden rounded-xl bg-surface-container-low p-space-md shadow-md" id="ast-drawer">
+<div class="flex items-center justify-between pb-space-xs border-b border-outline-variant/10">
+<div class="flex items-center gap-space-xs font-code-sm text-code-sm text-primary">
+<span class="material-symbols-outlined text-[16px]">code_blocks</span>
+<span>PARSED ABSTRACT SYNTAX TREE (PYTHON 3.11)</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant/50">Grammar: cpython-strict</span>
+</div>
+<pre class="mt-space-sm p-space-sm bg-surface-container-lowest rounded font-code-sm text-code-sm text-on-surface-variant overflow-x-auto leading-relaxed">Module(
+  body=[
+    Assign(
+      targets=[Name(id='prod', ctx=Store())],
+      value=BinOp(left=Constant(value=125), op=Mult(), right=Constant(value=64))),
+    Assign(
+      targets=[Name(id='root', ctx=Store())],
+      value=Call(
+        func=Attribute(value=Name(id='math', ctx=Load()), attr='sqrt', ctx=Load()),
+        args=[Name(id='prod', ctx=Load())], keywords=[]))
+  ],
+  type_ignores=[])</pre>
+</div>
+</div>
+<!-- Category Adaptable Showcase Panel (Right 5 Cols) -->
+<div class="lg:col-span-5 flex flex-col gap-space-md bg-surface-container-low p-space-md rounded-xl shadow-lg">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">Multi-Solver Ecosystem</span>
+<span class="font-headline-md text-body-lg text-on-surface font-semibold">Category Output Formats</span>
+</div>
+<span class="font-label-sm text-label-sm bg-surface-container px-2 py-1 rounded text-on-surface-variant">Live Samples</span>
+</div>
+<!-- Custom Tab Navigation Switcher -->
+<div class="grid grid-cols-4 p-1 bg-surface-container-lowest rounded-lg font-label-md text-label-md text-center select-none" id="category-tabs">
+<button class="category-tab-btn py-1.5 rounded text-on-primary bg-primary font-bold transition-all" onclick="switchTab('tab-math', this)">Math</button>
+<button class="category-tab-btn py-1.5 rounded text-on-surface-variant hover:text-on-surface transition-all" onclick="switchTab('tab-code', this)">Code</button>
+<button class="category-tab-btn py-1.5 rounded text-on-surface-variant hover:text-on-surface transition-all" onclick="switchTab('tab-sentiment', this)">NLP</button>
+<button class="category-tab-btn py-1.5 rounded text-on-surface-variant hover:text-on-surface transition-all" onclick="switchTab('tab-ner', this)">NER</button>
+</div>
+<!-- Tab 1: Current Math (Executed) -->
+<div class="tab-panel flex flex-col gap-space-sm p-space-md rounded-lg bg-surface-container-lowest" id="tab-math">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary uppercase font-semibold">Active Solver Output</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Type: Deterministic/Arithmetic</span>
+</div>
+<div class="p-space-md rounded bg-surface-container flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Expression</span>
+<code class="font-code-lg text-code-lg text-on-surface font-bold">sqrt(125 * 64)</code>
+<div class="mt-2 pt-2 border-t border-outline-variant/10 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Exact Integer & Approximate Root</span>
+<span class="font-code-lg text-code-lg text-primary font-bold">8000, 89.4427</span>
+</div>
+</div>
+</div>
+<!-- Tab 2: Code Debugging Output Preview -->
+<div class="tab-panel hidden flex flex-col gap-space-sm p-space-md rounded-lg bg-surface-container-lowest" id="tab-code">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary uppercase font-semibold">Code Repair Kernel</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Fixed: ZeroDivisionError</span>
+</div>
+<div class="p-space-sm rounded bg-surface-container-high/40 font-code-sm text-code-sm flex flex-col gap-1 overflow-x-auto">
+<div class="flex items-center gap-space-sm text-error/90 bg-error-container/20 px-2 py-0.5 rounded">
+<span class="select-none text-error font-bold">-</span>
+<span class="line-through">return total / count</span>
+</div>
+<div class="flex items-center gap-space-sm text-primary bg-primary-container/20 px-2 py-0.5 rounded">
+<span class="select-none text-primary font-bold">+</span>
+<span>return total / count if count > 0 else 0.0</span>
+</div>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant pt-1">
+<span>Compiler: AST-Tree Mutator</span>
+<span class="text-primary">Passed 14 Unit Tests</span>
+</div>
+</div>
+<!-- Tab 3: Sentiment NLP Output Preview -->
+<div class="tab-panel hidden flex flex-col gap-space-sm p-space-md rounded-lg bg-surface-container-lowest" id="tab-sentiment">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-tertiary uppercase font-semibold">DistilBERT Mini (Quantized 8-bit)</span>
+<span class="font-code-sm text-code-sm text-primary">Latency: 4.8ms</span>
+</div>
+<div class="flex flex-col gap-2 p-space-sm rounded bg-surface-container">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface font-semibold">94.2% Positive</span>
+<span class="font-code-sm text-code-sm text-primary font-bold">High Confidence</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="h-full bg-primary" style="width: 94.2%"></div>
+<div class="h-full bg-secondary" style="width: 4.1%"></div>
+<div class="h-full bg-error" style="width: 1.7%"></div>
+</div>
+</div>
+<div class="flex flex-wrap gap-1 font-label-sm text-label-sm">
+<span class="px-2 py-0.5 rounded bg-surface-container text-primary font-mono">"lightning-fast" (+0.84)</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-primary font-mono">"reproducible" (+0.67)</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono">"engine" (0.0)</span>
+</div>
+</div>
+<!-- Tab 4: NER Extraction Output Preview -->
+<div class="tab-panel hidden flex flex-col gap-space-sm p-space-md rounded-lg bg-surface-container-lowest" id="tab-ner">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary uppercase font-semibold">Token Labeler / Spacy Regex</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">3 Entities Extracted</span>
+</div>
+<div class="p-space-sm rounded bg-surface-container font-body-md text-body-sm leading-relaxed text-on-surface">
+            The consortium negotiated with 
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-primary/15 text-primary font-code-sm text-code-sm font-bold uppercase">OpenAI <span class="text-[9px] opacity-70">ORG</span></span> 
+            for an allotment of 
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-secondary/15 text-secondary font-code-sm text-code-sm font-bold uppercase">$10B <span class="text-[9px] opacity-70">MONEY</span></span> 
+            closing in late 
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-tertiary/15 text-tertiary font-code-sm text-code-sm font-bold uppercase">2024 <span class="text-[9px] opacity-70">DATE</span></span>.
+          </div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant pt-1">
+<span>Model: Regex + Tokenizer</span>
+<span class="text-tertiary">Precision: 0.991</span>
+</div>
+</div>
+<!-- Quick Telemetry Footnote -->
+<div class="p-space-sm rounded bg-surface-container-high/40 flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[16px]">tune</span>
+<span>Dynamic Engine Affinity:</span>
+</div>
+<span class="text-primary font-bold">Local-First Heuristic</span>
+</div>
+</div>
+</div>
+<!-- Collapsible 'How this task was solved' Routing Trace Inspector -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-lg flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[18px]">alt_route</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-semibold">How This Task Was Solved</h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Deterministic Execution Audit Trail & Routing Proof</span>
+</div>
+</div>
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-primary font-code-sm text-code-sm flex items-center gap-space-xs transition-colors self-start sm:self-auto" onclick="toggleJsonModal()">
+<span class="material-symbols-outlined text-[16px]">data_object</span>
+<span id="json-toggle-text">Show Raw API JSON</span>
+</button>
+</div>
+<!-- Step-by-Step Visual Audit Flow -->
+<div class="grid grid-cols-1 md:grid-cols-5 gap-space-sm pt-space-xs relative">
+<!-- Step 1 -->
+<div class="flex flex-col p-space-md rounded-lg bg-surface-container-lowest gap-space-xs relative">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary font-bold font-mono">STEP 01</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/70">0.08ms</span>
+</div>
+<span class="font-headline-md text-body-md text-on-surface font-semibold">Ingestion</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Payload ingested via local IPC socket. 48 bytes validated utf-8.</p>
+<div class="mt-auto pt-space-xs">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono">IPC: 127.0.0.1</span>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col p-space-md rounded-lg bg-surface-container-lowest gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary font-bold font-mono">STEP 02</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/70">0.42ms</span>
+</div>
+<span class="font-headline-md text-body-md text-on-surface font-semibold">Pattern AST Match</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Heuristic tokenizer tagged query as arithmetic expression (99.8% conf).</p>
+<div class="mt-auto pt-space-xs">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-secondary/15 text-secondary font-mono">Score: 0.998</span>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col p-space-md rounded-lg bg-surface-container-lowest gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary font-bold font-mono">STEP 03</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/70">0.11ms</span>
+</div>
+<span class="font-headline-md text-body-md text-on-surface font-semibold">Router Bypass</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">External Cloud LLMs actively skipped. Saved ~850ms roundtrip & 420 tokens.</p>
+<div class="mt-auto pt-space-xs">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-primary/15 text-primary font-mono">Cloud Bypass: TRUE</span>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="flex flex-col p-space-md rounded-lg bg-surface-container-lowest gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary font-bold font-mono">STEP 04</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/70">1.22ms</span>
+</div>
+<span class="font-headline-md text-body-md text-on-surface font-semibold">Python Sandbox</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Executed inside isolated math evaluator with SymPy exact precision kernel.</p>
+<div class="mt-auto pt-space-xs">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono">Cgroups Sandboxed</span>
+</div>
+</div>
+<!-- Step 5 -->
+<div class="flex flex-col p-space-md rounded-lg bg-surface-container-lowest gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary font-bold font-mono">STEP 05</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant/70">0.31ms</span>
+</div>
+<span class="font-headline-md text-body-md text-on-surface font-semibold">Validation & Pack</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Validated typed tuple, packed payload JSON, emitted telemetry metric event.</p>
+<div class="mt-auto pt-space-xs">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-primary/20 text-primary font-mono font-bold">Final 200 OK</span>
+</div>
+</div>
+</div>
+<!-- Raw JSON Response Inspector Block (Toggleable) -->
+<div class="hidden flex-col gap-space-xs mt-space-sm pt-space-md border-t border-outline-variant/15" id="json-inspector">
+<div class="flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-bold text-primary">POST</span>
+<span class="text-on-surface">/api/v1/solve</span>
+<span class="text-on-surface-variant/40">→</span>
+<span class="text-primary font-bold">200 OK</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant/60">Response Payload (application/json)</span>
+</div>
+<pre class="p-space-md bg-surface-container-lowest rounded-lg font-code-sm text-code-sm text-primary/90 overflow-x-auto leading-relaxed shadow-inner">{
+  "success": true,
+  "task_type": "math",
+  "answer": "8000",
+  "secondary_results": {
+    "square_root": 89.4427190999916,
+    "expression": "sqrt(125 * 64)"
+  },
+  "solver": "python",
+  "solver_details": {
+    "engine": "SymPy Sandbox v1.12",
+    "isolation": "cgroups-v2",
+    "deterministic": true,
+    "tokens_consumed": 0
+  },
+  "processing_time_ms": 2.14,
+  "memory_rss_mb": 14.2,
+  "error": null
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function switchTab(tabId, element) {
+    document.querySelectorAll('.tab-panel').forEach(panel => {
+      panel.classList.add('hidden');
+    });
+    const target = document.getElementById(tabId);
+    if (target) {
+      target.classList.remove('hidden');
+    }
+
+    document.querySelectorAll('.category-tab-btn').forEach(btn => {
+      btn.className = 'category-tab-btn py-1.5 rounded text-on-surface-variant hover:text-on-surface transition-all font-label-md text-label-md';
+    });
+    element.className = 'category-tab-btn py-1.5 rounded text-on-primary bg-primary font-bold transition-all font-label-md text-label-md';
+  }
+
+  function toggleJsonModal() {
+    const inspector = document.getElementById('json-inspector');
+    const label = document.getElementById('json-toggle-text');
+    if (inspector.classList.contains('hidden')) {
+      inspector.classList.remove('hidden');
+      inspector.classList.add('flex');
+      label.textContent = 'Hide Raw API JSON';
+    } else {
+      inspector.classList.add('hidden');
+      inspector.classList.remove('flex');
+      label.textContent = 'Show Raw API JSON';
+    }
+  }
+
+  function toggleAstInspector() {
+    const drawer = document.getElementById('ast-drawer');
+    if (drawer.classList.contains('hidden')) {
+      drawer.classList.remove('hidden');
+      drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      drawer.classList.add('hidden');
+    }
+  }
+
+  function downloadJsonPayload() {
+    const payload = {
+      success: true,
+      task_type: "math",
+      answer: "8000",
+      secondary_results: {
+        square_root: 89.4427190999916,
+        expression: "sqrt(125 * 64)"
+      },
+      solver: "python",
+      processing_time_ms: 2.14,
+      error: null
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "cogniflow_task_8f99c01d.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+</script></main></div></body></html>
