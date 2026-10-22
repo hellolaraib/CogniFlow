@@ -6,6 +6,7 @@ import { HistoryScreen } from './components/screens/HistoryScreen';
 import { SolversScreen } from './components/screens/SolversScreen';
 import { SettingsScreen } from './components/screens/SettingsScreen';
 import { DeveloperScreen } from './components/screens/DeveloperScreen';
+import { BenchmarkScreen } from './components/screens/BenchmarkScreen';
 import { TaskType, ChatMessage, TaskHistoryItem } from './types/solver';
 import { INITIAL_HISTORY } from './data/initialHistory';
 import { solveTask, checkBackendHealth, ApiNetworkError, ApiBackendError } from './services/api';
@@ -16,6 +17,9 @@ const STORAGE_KEY_HISTORY = 'cogniflow_task_history';
 export function App() {
   const [currentScreen, setCurrentScreen] = useState<ScreenId>('chat');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Session identifier for context isolation
+  const [sessionId, setSessionId] = useState<string>(() => 'sess_' + Math.random().toString(36).substring(2, 10));
 
   // Chat conversation state
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
@@ -105,6 +109,11 @@ export function App() {
         e.preventDefault();
         setCurrentScreen('developer');
       }
+      // Alt + 6 -> Benchmark & Evaluation Dashboard
+      if (e.altKey && e.key === '6') {
+        e.preventDefault();
+        setCurrentScreen('benchmark');
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -137,6 +146,7 @@ export function App() {
         task_type: mode,
         input: text,
         conversation_history: recentHistory,
+        session_id: sessionId,
       });
 
       const assistantMsgId = 'msg_' + Math.random().toString(36).substring(2, 9);
@@ -205,6 +215,7 @@ export function App() {
 
   const handleNewChat = () => {
     setMessages([]);
+    setSessionId('sess_' + Math.random().toString(36).substring(2, 10));
     setCurrentScreen('chat');
   };
 
@@ -290,6 +301,12 @@ export function App() {
               onNavigateToSettings={() => setCurrentScreen('settings')}
               history={history}
               messages={messages}
+            />
+          )}
+
+          {currentScreen === 'benchmark' && (
+            <BenchmarkScreen
+              onNavigateToChat={() => setCurrentScreen('chat')}
             />
           )}
         </main>

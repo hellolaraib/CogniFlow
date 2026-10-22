@@ -1,0 +1,126 @@
+Test ID,Category,Expected Solver,Routed Solver,Routing Correct,Quality Passed,Overall Passed,Latency (ms),LLM Calls,Total Tokens,Counting Method,Baseline Tokens,Tokens Saved,Input Prompt
+tc_arith_01,arithmetic,python,python,True,True,True,20.7,0,0,not_applicable,140,140,Calculate 125 * 64
+tc_arith_02,arithmetic,python,python,True,True,True,0.23,0,0,not_applicable,135,135,what is 45% of 320
+tc_arith_03,arithmetic,python,python,True,True,True,0.19,0,0,not_applicable,130,130,sqrt(144) + 10
+tc_arith_04,arithmetic,python,python,True,True,True,0.17,0,0,not_applicable,135,135,(15 - 5) * (8 + 2)
+tc_arith_05,arithmetic,python,python,True,True,True,0.14,0,0,not_applicable,130,130,2 to the power of 8
+tc_arith_06,arithmetic,python,python,True,True,True,0.31,0,0,not_applicable,130,130,what is 100 / 4?
+tc_arith_07,arithmetic,python,python,True,True,True,0.16,0,0,not_applicable,135,135,35% of 800
+tc_arith_08,arithmetic,python,python,True,True,True,0.22,0,0,not_applicable,130,130,what is 25 * 4?
+tc_arith_09,arithmetic,python,python,True,True,True,0.14,0,0,not_applicable,130,130,divide 1000 by 8
+tc_sym_01,symbolic_math,python,python,True,True,True,0.12,0,0,not_applicable,160,160,solve 2x + 5 = 15
+tc_sym_02,symbolic_math,python,python,True,True,True,0.34,0,0,not_applicable,160,160,solve 3x - 9 = 0
+tc_sym_03,symbolic_math,python,python,True,True,True,0.2,0,0,not_applicable,160,160,solve 4x + 12 = 36
+tc_sym_04,symbolic_math,python,python,True,True,True,0.47,0,0,not_applicable,140,140,factorial(6)
+tc_sym_05,symbolic_math,python,python,True,True,True,0.15,0,0,not_applicable,130,130,5!
+tc_sym_06,symbolic_math,python,python,True,True,True,0.14,0,0,not_applicable,140,140,"mean([10, 20, 30, 40])"
+tc_sym_07,symbolic_math,python,python,True,True,True,0.16,0,0,not_applicable,140,140,"median([1, 5, 2, 8, 7])"
+tc_sym_08,symbolic_math,python,python,True,True,True,0.15,0,0,not_applicable,135,135,"sum([5, 15, 25, 35])"
+tc_gk_01,general_knowledge,general_llm,general_llm,True,True,True,0.72,1,61,actual,80,19,What is the capital of France?
+tc_gk_02,general_knowledge,general_llm,general_llm,True,True,True,0.25,1,61,actual,85,24,Who wrote Romeo and Juliet?
+tc_gk_03,general_knowledge,general_llm,general_llm,True,True,True,0.23,1,76,actual,95,19,What is the speed of light in vacuum?
+tc_gk_04,general_knowledge,general_llm,general_llm,True,True,True,0.3,1,81,actual,90,9,What is the boiling point of water at standard atmospheric pressure?
+tc_gk_05,general_knowledge,general_llm,general_llm,True,True,True,0.29,1,71,actual,80,9,What is the chemical symbol for gold?
+tc_gk_06,general_knowledge,general_llm,general_llm,True,True,True,0.29,1,70,actual,90,20,Who proposed the theory of general relativity?
+tc_gk_07,general_knowledge,general_llm,general_llm,True,True,True,0.25,1,73,actual,80,7,What planet is known as the Red Planet?
+tc_gk_08,general_knowledge,general_llm,general_llm,True,True,True,0.22,1,68,actual,80,12,In which continent is the Sahara Desert located?
+tc_exp_01,concept_explanation,factual,general_llm,True,True,True,0.28,1,119,actual,350,231,Explain how a binary search tree works in simple terms
+tc_exp_02,concept_explanation,factual,vector_rag,True,True,True,0.18,0,0,not_applicable,320,320,explain queue in details
+tc_exp_03,concept_explanation,general_llm,general_llm,True,True,True,0.22,1,101,actual,380,279,Explain the concept of recursion with an example
+tc_exp_04,concept_explanation,general_llm,general_llm,True,True,True,0.25,1,91,actual,360,269,What is polymorphism in object-oriented programming?
+tc_exp_05,concept_explanation,general_llm,general_llm,True,True,True,0.25,1,107,actual,390,283,Explain the difference between stack and heap memory
+tc_exp_06,concept_explanation,general_llm,general_llm,True,True,True,0.27,1,107,actual,400,293,Explain how virtual memory works in modern operating systems
+tc_exp_07,concept_explanation,general_llm,general_llm,True,True,True,0.32,1,97,actual,380,283,What is the difference between TCP and UDP?
+tc_exp_08,concept_explanation,general_llm,general_llm,True,True,True,2.31,1,113,actual,380,267,Explain how hash tables achieve O(1) average lookup time
+tc_c_01,c_programming,general_llm,general_llm,True,True,True,0.56,1,171,actual,550,379,Write a C program for binary tree inorder traversal and explain it step by step.
+tc_c_02,c_programming,general_llm,general_llm,True,True,True,0.85,1,171,actual,450,279,Write a C program to reverse a singly linked list with a working main function.
+tc_c_03,c_programming,general_llm,general_llm,True,True,True,1.31,1,133,actual,400,267,Write a C function to compute Fibonacci numbers iteratively
+tc_c_04,c_programming,general_llm,general_llm,True,True,True,1.8,1,121,actual,420,299,Write a C program to check if a string is a palindrome
+tc_c_05,c_programming,general_llm,general_llm,True,True,True,0.77,1,131,actual,480,349,Write a C program implementing a stack using a fixed array with push and pop operations
+tc_c_06,c_programming,general_llm,general_llm,True,True,True,1.54,1,132,actual,380,248,Write a C function to find the maximum element in an integer array
+tc_c_07,c_programming,general_llm,general_llm,True,True,True,1.53,1,167,actual,460,293,Write a C program for binary search on a sorted integer array
+tc_c_08,c_programming,general_llm,general_llm,True,True,True,0.93,1,167,actual,410,243,Write a C program to count vowels in a string
+tc_dbg_01,code_debugging,code_debug,ast_code_analyzer,True,True,True,1.18,0,0,not_applicable,240,240,"debug this code:
+def sum_list(items):
+  for i in range(len(items) + 1):
+    print(items[i])"
+tc_dbg_02,code_debugging,code_debug,ast_code_analyzer,True,True,True,0.46,0,0,not_applicable,220,220,"fix bug in:
+for (int i = 0; i <= n; i++) { arr[i] = 0; }"
+tc_dbg_03,code_debugging,code_debug,ast_code_analyzer,True,True,True,0.36,0,0,not_applicable,230,230,"debug this null pointer bug:
+int *p = NULL;
+*p = 10;"
+tc_dbg_04,code_debugging,code_debug,ast_code_analyzer,True,True,True,0.24,0,0,not_applicable,240,240,"debug recursion error:
+def fib(n):
+  return fib(n - 1) + fib(n - 2)"
+tc_dbg_05,code_debugging,code_debug,ast_code_analyzer,True,True,True,0.21,0,0,not_applicable,220,220,"debug exception:
+def divide(a, b):
+  return a / b"
+tc_dbg_06,code_debugging,code_debug,ast_code_analyzer,True,True,True,0.43,0,0,not_applicable,230,230,"fix compile error:
+char str[5] = ""hello"";"
+tc_dbg_07,code_debugging,code_debug,ast_code_analyzer,True,True,True,0.44,0,0,not_applicable,230,230,"why does this fail:
+while (i > 0) {
+  count++;
+}"
+tc_dbg_08,code_debugging,code_debug,ast_code_analyzer,True,True,True,0.28,0,0,not_applicable,220,220,"fix traceback in python:
+def get_item(d, key):
+  return d[key]"
+tc_sum_01,summarization,summarization,edge_llm,True,True,True,1.04,0,0,not_applicable,280,280,"summarize this text: Operating systems manage computer hardware resources and provide common services for application software. The kernel is the core component that controls memory, CPU scheduling, device drivers, and system calls. Without an operating system, each application would have to interact directly with the hardware, leading to massive duplication and stability problems."
+tc_sum_02,summarization,summarization,edge_llm,True,True,True,0.53,0,0,not_applicable,290,290,"summarize the following passage: Microservices architecture structures an application as a collection of loosely coupled, independently deployable services. Each service typically implements a specific business capability and communicates via lightweight protocols such as HTTP REST or gRPC. While this architecture enhances scalability and developer velocity, it introduces complexity in distributed transaction management, network latency, and observability."
+tc_sum_03,summarization,summarization,edge_llm,True,True,True,0.38,0,0,not_applicable,260,260,"summarize: Database indexing utilizes data structures like B-trees and hash indexes to speed up query execution times. By maintaining ordered pointers to disk blocks, queries avoid costly full table scans. However, indexes consume additional storage space and incur write overhead during insertion."
+tc_sum_04,summarization,summarization,edge_llm,True,True,True,0.51,0,0,not_applicable,270,270,"summarize this article: Gradient descent is an optimization algorithm used to train machine learning models by iteratively minimizing a loss function. In each iteration, parameters are updated in the opposite direction of the gradient scaled by the learning rate. Stochastic gradient descent updates weights per batch, speeding up training on massive datasets."
+tc_sum_05,summarization,summarization,edge_llm,True,True,True,0.76,0,0,not_applicable,270,270,"summarize: The TLS protocol provides privacy and data integrity between two communicating computer applications. During the initial TLS handshake, the client and server agree on cryptographic parameters and authenticate using digital certificates. Symmetric session keys are then derived for bulk encryption."
+tc_sum_06,summarization,summarization,edge_llm,True,True,True,0.35,0,0,not_applicable,260,260,"summarize: CogniFlow is an intelligent task router that dispatches incoming queries to deterministic solvers or general AI models. By solving mathematical calculations, lexical sentiment, and logic checks locally, CogniFlow eliminates cloud token expenses while maintaining sub-millisecond execution times."
+tc_sum_07,summarization,summarization,edge_llm,True,True,True,0.39,0,0,not_applicable,270,270,summarize: The Raft consensus algorithm was designed for manageability and fault tolerance in distributed systems. It elects a leader to manage replicated logs and relies on term numbers and heartbeat timers to detect split-brain conditions. Leader changes require consensus from a quorum.
+tc_sent_01,sentiment,lightweight_nlp,lightweight_nlp,True,True,True,0.31,0,0,not_applicable,140,140,This product is absolutely amazing and exceeded all expectations!
+tc_sent_02,sentiment,lightweight_nlp,lightweight_nlp,True,True,True,0.25,0,0,not_applicable,140,140,"Horrible customer support, wasted three days waiting."
+tc_sent_03,sentiment,lightweight_nlp,lightweight_nlp,True,True,True,0.18,0,0,not_applicable,145,145,Analyze sentiment of this review: The software is great and fast
+tc_sent_04,sentiment,lightweight_nlp,lightweight_nlp,True,True,True,0.61,0,0,not_applicable,140,140,"sentiment analysis: Worst experience ever, completely broken."
+tc_sent_05,sentiment,lightweight_nlp,lightweight_nlp,True,True,True,0.28,0,0,not_applicable,140,140,"review: works like a charm, flawless performance!"
+tc_sent_06,sentiment,lightweight_nlp,lightweight_nlp,True,True,True,0.22,0,0,not_applicable,140,140,"rating: waste of money, do not recommend."
+tc_sent_07,sentiment,lightweight_nlp,lightweight_nlp,True,True,True,0.21,0,0,not_applicable,150,150,is this positive: This tool is awesome and saved me hours of manual labor!
+tc_sent_08,sentiment,lightweight_nlp,lightweight_nlp,True,True,True,0.33,0,0,not_applicable,140,140,sentiment: terrible experience with poor shipping.
+tc_ner_01,ner,regex_spacy,regex_spacy,True,True,True,2.65,0,0,not_applicable,170,170,"Apple was founded by Steve Jobs in California on April 1, 1976."
+tc_ner_02,ner,regex_spacy,regex_spacy,True,True,True,0.46,0,0,not_applicable,165,165,Sundar Pichai visited London yesterday for the Google AI summit.
+tc_ner_03,ner,regex_spacy,regex_spacy,True,True,True,0.39,0,0,not_applicable,165,165,extract entities: Elon Musk announced Tesla will build a Gigafactory in Texas.
+tc_ner_04,ner,regex_spacy,regex_spacy,True,True,True,0.39,0,0,not_applicable,175,175,"find entities: Microsoft acquired GitHub in San Francisco on June 4, 2018 for $7.5B."
+tc_ner_05,ner,regex_spacy,regex_spacy,True,True,True,0.61,0,0,not_applicable,165,165,"ner: Satya Nadella spoke at the conference in Seattle on November 15, 2023."
+tc_ner_06,ner,regex_spacy,regex_spacy,True,True,True,0.65,0,0,not_applicable,165,165,"extract organizations: Amazon opened its headquarters in Arlington, Virginia."
+tc_ner_07,ner,regex_spacy,regex_spacy,True,True,True,0.55,0,0,not_applicable,170,170,"extract names: Mark Zuckerberg launched Meta in Cambridge, Massachusetts in 2004."
+tc_ner_08,ner,regex_spacy,regex_spacy,True,True,True,0.45,0,0,not_applicable,160,160,extract entities: Google announced Gemini in California.
+tc_log_01,logical_reasoning,smt_solver,smt_solver,True,True,True,0.23,0,0,not_applicable,180,180,All humans are mortal. Socrates is a human. Is Socrates mortal?
+tc_log_02,logical_reasoning,smt_solver,smt_solver,True,True,True,4.38,0,0,not_applicable,170,170,"If A implies B and B implies C, does A imply C?"
+tc_log_03,logical_reasoning,smt_solver,smt_solver,True,True,True,0.27,0,0,not_applicable,165,165,Is the proposition P and not P satisfiable?
+tc_log_04,logical_reasoning,smt_solver,smt_solver,True,True,True,0.21,0,0,not_applicable,175,175,All dogs are mammals. All mammals are animals. Are all dogs animals?
+tc_log_05,logical_reasoning,smt_solver,smt_solver,True,True,True,0.19,0,0,not_applicable,180,180,If it rains the ground is wet. The ground is not wet. Did it rain?
+tc_log_06,logical_reasoning,smt_solver,smt_solver,True,True,True,0.18,0,0,not_applicable,170,170,Either A or B is true. A is false. Does it follow that B is true?
+tc_log_07,logical_reasoning,smt_solver,smt_solver,True,True,True,0.16,0,0,not_applicable,165,165,Is the statement P or not P a tautology?
+tc_multi_01,multi_intent,smart,general_llm,True,True,True,0.64,1,107,actual,450,343,What is 15 * 8? Also explain binary trees in simple language.
+tc_multi_02,multi_intent,smart,python,True,True,True,0.2,0,0,not_applicable,280,280,Calculate 125 * 64 and analyze sentiment of 'Great product!'
+tc_multi_03,multi_intent,smart,python,True,True,True,0.25,0,0,not_applicable,290,290,Compute 45% of 320; extract entities from 'Apple in Cupertino'
+tc_multi_04,multi_intent,smart,python,True,True,True,0.14,0,0,not_applicable,290,290,Solve 2x + 5 = 15; What is the sentiment of 'Worst experience ever'?
+tc_multi_05,multi_intent,smart,general_llm,True,True,True,0.37,1,91,actual,350,259,Calculate sqrt(144) + 10 and explain what a queue FIFO is
+tc_multi_06,multi_intent,smart,python,True,True,True,0.17,0,0,not_applicable,310,310,What is 50 divided by 2? And check if 'All humans are mortal. Socrates is a human' is valid.
+tc_multi_07,multi_intent,smart,general_llm,True,True,True,0.29,1,134,actual,460,326,Compute 2 to the power of 8; write a C program to reverse a string
+tc_multi_08,multi_intent,smart,python,True,True,True,0.17,0,0,not_applicable,270,270,Calculate 100 / 4 and also analyze sentiment of 'Works like a charm'
+tc_ctx_01,follow_up_context,general_llm,general_llm,True,True,True,0.24,1,109,actual,280,171,How do I insert a node into it?
+tc_ctx_02,follow_up_context,general_llm,general_llm,True,True,True,0.23,1,86,actual,340,254,How do they compare to virtual machines?
+tc_ctx_03,follow_up_context,general_llm,general_llm,True,True,True,0.36,1,76,actual,300,224,What are its main advantages?
+tc_ctx_04,follow_up_context,general_llm,general_llm,True,True,True,0.56,1,91,actual,260,169,What is its worst-case time complexity?
+tc_ctx_05,follow_up_context,python,python,True,True,True,0.39,0,0,not_applicable,200,200,Now divide that by 2
+tc_ctx_06,follow_up_context,general_llm,general_llm,True,True,True,0.34,1,85,actual,270,185,Give an example of a REST endpoint for it
+tc_ctx_07,follow_up_context,general_llm,general_llm,True,True,True,0.31,1,98,actual,310,212,Why does it cause a stack overflow if that case is missing?
+tc_ctx_08,follow_up_context,general_llm,general_llm,True,True,True,0.27,1,90,actual,260,170,What is the time complexity of searching in it?
+tc_amb_01,ambiguous_underspecified,general_llm,general_llm,True,True,True,0.42,1,73,actual,150,77,Solve the equation
+tc_amb_02,ambiguous_underspecified,general_llm,general_llm,True,True,True,0.13,1,74,actual,150,76,Which is better?
+tc_amb_03,ambiguous_underspecified,general_llm,general_llm,True,True,True,0.12,1,77,actual,150,73,Debug this code
+tc_amb_04,ambiguous_underspecified,general_llm,general_llm,True,True,True,0.11,1,65,actual,150,85,Analyze the sentiment
+tc_amb_05,ambiguous_underspecified,general_llm,general_llm,True,True,True,0.11,1,68,actual,150,82,Extract entities
+tc_amb_06,ambiguous_underspecified,general_llm,general_llm,True,True,True,0.11,1,73,actual,150,77,Sort this
+tc_amb_07,ambiguous_underspecified,general_llm,general_llm,True,True,True,0.11,1,62,actual,150,88,Summarize
+tc_fail_01,failure_recovery,general_llm,general_llm,True,True,True,105.0,0,0,unavailable,0,0,Simulate rate limit failure handling on general question
+tc_fail_02,failure_recovery,general_llm,general_llm,True,True,True,120.0,0,0,unavailable,0,0,Simulate server error 503 service unavailable
+tc_fail_03,failure_recovery,general_llm,general_llm,True,True,True,200.0,0,0,unavailable,0,0,Simulate network timeout on external provider
+tc_fail_04,failure_recovery,general_llm,general_llm,True,True,True,90.0,0,0,unavailable,0,0,Simulate invalid authentication key 401
+tc_fail_05,failure_recovery,general_llm,general_llm,True,True,True,450.0,2,100,actual,180,80,Simulate empty response recovery with retry
+tc_fail_06,failure_recovery,general_llm,general_llm,True,True,True,450.0,2,100,actual,190,90,Simulate placeholder response rejection with retry
+tc_fail_07,failure_recovery,general_llm,general_llm,True,True,True,0.1,0,0,unavailable,0,0,Simulate unconfigured provider status

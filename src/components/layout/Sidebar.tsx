@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type ScreenId = 'chat' | 'history' | 'solvers' | 'settings' | 'developer';
+export type ScreenId = 'chat' | 'history' | 'solvers' | 'settings' | 'developer' | 'benchmark';
 
 interface SidebarProps {
   currentScreen: ScreenId;
@@ -143,6 +143,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
             <span className="font-code-sm text-[9px] px-1.5 py-0.5 rounded font-bold uppercase bg-amber-500/10 text-amber-400 border border-amber-500/30">
               DEV
+            </span>
+          </button>
+
+          {/* Benchmark Suite */}
+          <button
+            onClick={() => onNavigate('benchmark')}
+            className={`w-full flex items-center justify-between px-space-md py-2 rounded-lg transition-all text-left text-sm ${
+              currentScreen === 'benchmark'
+                ? 'bg-surface-container-high text-cyan-400 border border-cyan-500/30 font-semibold shadow-inner'
+                : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+            }`}
+          >
+            <div className="flex items-center gap-space-sm">
+              <span className="material-symbols-outlined text-[18px]">speed</span>
+              <span>Benchmark Suite</span>
+            </div>
+            <span className="font-code-sm text-[9px] px-1.5 py-0.5 rounded font-bold uppercase bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+              EVAL
             </span>
           </button>
         </nav>

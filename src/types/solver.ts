@@ -92,6 +92,14 @@ export const TASK_TYPES: TaskTypeOption[] = [
     description: 'Architecture & technical lookup',
     defaultEngine: 'Vector Index + Edge LLM',
   },
+  {
+    id: 'general_llm',
+    label: 'General AI Model',
+    badge: 'GROQ/LLM',
+    badgeClass: 'text-emerald-400 bg-emerald-950/40',
+    description: 'Open-ended reasoning, questions & code',
+    defaultEngine: 'Groq Cloud / General AI',
+  },
 ];
 
 export interface SolveRequest {
@@ -99,6 +107,7 @@ export interface SolveRequest {
   input: string;
   options?: Record<string, any>;
   conversation_history?: Array<{ role: 'user' | 'assistant'; content: string }>;
+  session_id?: string;
 }
 
 export interface SecondaryResults {
@@ -160,6 +169,7 @@ export interface SolveResponse {
   solver: string;
   processing_time_ms: number;
   error: string | null;
+  session_id?: string;
   secondary_results?: SecondaryResults;
   solver_details?: SolverDetails;
   memory_rss_mb?: number;
@@ -212,4 +222,91 @@ export interface TaskHistoryItem {
   response: SolveResponse;
   reasoning?: string;
   fingerprint?: string;
+}
+
+// ============================================================================
+// BENCHMARK AND EVALUATION ENGINE TYPES
+// ============================================================================
+
+export interface BenchmarkCaseResult {
+  id: string;
+  category: string;
+  input: string;
+  expected_solver: string;
+  routed_solver: string;
+  routing_correct: boolean;
+  quality_passed: boolean;
+  quality_detail: string;
+  overall_passed: boolean;
+  elapsed_ms: number;
+  llm_calls: number;
+  input_tokens: number;
+  output_tokens: number;
+  total_tokens: number;
+  counting_method: string;
+  baseline_tokens: number;
+  tokens_saved: number;
+  answer_preview: string;
+}
+
+export interface BenchmarkSummary {
+  total_cases: number;
+  passed_cases: number;
+  failed_cases: number;
+  task_completion_rate_pct: number;
+  routing_accuracy_pct: number;
+  zero_token_solve_ratio_pct: number;
+  deterministic_zero_token_solves: number;
+  error_rate_pct: number;
+}
+
+export interface BenchmarkTokenAccounting {
+  total_actual_input_tokens: number;
+  total_actual_output_tokens: number;
+  total_actual_llm_tokens: number;
+  total_llm_calls: number;
+  deterministic_tokens_consumed: number;
+}
+
+export interface BenchmarkLatencyMetrics {
+  average_latency_ms: number;
+  median_latency_ms: number;
+  p95_latency_ms: number;
+  min_latency_ms: number;
+  max_latency_ms: number;
+  total_suite_elapsed_sec: number;
+}
+
+export interface BenchmarkBaselineComparison {
+  baseline_name: string;
+  baseline_definition: string;
+  calculation_formula: string;
+  baseline_total_tokens: number;
+  cogniflow_actual_tokens: number;
+  estimated_tokens_saved: number;
+  token_savings_pct: number;
+  latency_speedup_factor: string;
+}
+
+export interface BenchmarkCategoryMetric {
+  total: number;
+  passed: number;
+  routing_correct: number;
+  tokens: number;
+}
+
+export interface BenchmarkReport {
+  timestamp: string;
+  mode: string;
+  provider: string;
+  summary: BenchmarkSummary;
+  token_accounting: BenchmarkTokenAccounting;
+  latency_metrics_ms: BenchmarkLatencyMetrics;
+  resource_usage: {
+    peak_ram_mb: number;
+  };
+  baseline_comparison: BenchmarkBaselineComparison;
+  solver_distribution: Record<string, number>;
+  category_metrics: Record<string, BenchmarkCategoryMetric>;
+  cases: BenchmarkCaseResult[];
 }

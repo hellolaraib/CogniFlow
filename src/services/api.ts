@@ -79,6 +79,7 @@ export async function solveTask(
         input: trimmedInput,
         options: request.options,
         conversation_history: request.conversation_history,
+        session_id: request.session_id,
       }),
       signal,
     });
@@ -220,4 +221,62 @@ export async function checkBackendHealth(): Promise<{
       error: err.message || 'Connection refused',
     };
   }
+}
+
+/**
+ * Fetch latest benchmark evaluation report
+ */
+export async function fetchBenchmarkSummary(): Promise<import('../types/solver').BenchmarkReport> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/benchmark/summary`, {
+    headers: { Accept: 'application/json' },
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch benchmark summary: ${res.statusText}`);
+  }
+  return await res.json();
+}
+
+/**
+ * Fetch benchmark dataset summary and category list
+ */
+export async function fetchBenchmarkDataset(): Promise<{
+  total_test_cases: number;
+  categories_count: number;
+  deterministic_cases: number;
+  requires_live_llm_cases: number;
+  category_breakdown: Record<string, number>;
+  categories: string[];
+}> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/benchmark/dataset`, {
+    headers: { Accept: 'application/json' },
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch benchmark dataset info: ${res.statusText}`);
+  }
+  return await res.json();
+}
+
+/**
+ * Execute benchmark run (offline or live Groq)
+ */
+export async function runBenchmarkSuite(params?: {
+  live?: boolean;
+  category?: string;
+  limit?: number;
+}): Promise<import('../types/solver').BenchmarkReport> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/benchmark/run`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(params || {}),
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to run benchmark suite: ${res.statusText}`);
+  }
+  return await res.json();
 }

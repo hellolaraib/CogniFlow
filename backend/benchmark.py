@@ -1,308 +1,118 @@
 #!/usr/bin/env python3
-"""CogniFlow Empirical Performance & Accuracy Benchmark Suite (Phase 12).
-
-Measures and reports genuine runtime metrics:
-- Task classification accuracy
-- Task success rate
-- Mathematical correctness
-- Retrieval relevance rejection & acceptance
-- Code debugging quality
-- Code generation correctness via syntax parsing & execution
-- Average, median, and P95 latency (ms)
-- Peak RAM usage (MB)
-- Deterministic vs lightweight NLP vs model usage
-- Input and output token consumption
-- Requests solved without LLM inference (zero-token ratio)
-- Paid API count (verifying 0 calls)
+"""CogniFlow Benchmark Runner CLI.
 
 Usage:
-    python -m backend.benchmark
+    python -m backend.benchmark                # Run all 109+ tests in reproducible offline mode
+    python -m backend.benchmark --live         # Run with live Groq requests (paced rate-limiting)
+    python -m backend.benchmark --category c_programming   # Run specific category
+    python -m backend.benchmark --limit 20     # Run subset
 """
 
 import sys
 import os
-import time
+import argparse
 import json
-import math
-import statistics
-import resource
-import ast
-from typing import List, Dict, Any
 
-# Ensure workspace root is in sys.path
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from backend.main import (
-    classify_intent,
-    solve_task,
-    SolveRequest,
-    score_hit_relevance
-)
-
-# -----------------------------------------------------------------------------
-# BENCHMARK EVALUATION DATASET
-# -----------------------------------------------------------------------------
-
-CLASSIFICATION_BENCHMARK = [
-    # Math
-    ("Calculate 125 * 64", "math"),
-    ("what is 45% of 320", "math"),
-    ("solve 2x + 5 = 15", "math"),
-    ("sqrt(144) + 10", "math"),
-    # Sentiment
-    ("This product is absolutely amazing and exceeded all expectations!", "sentiment"),
-    ("Horrible customer support, wasted three days waiting.", "sentiment"),
-    ("The interface is okay, standard features nothing special.", "sentiment"),
-    # NER
-    ("Apple opened a new office in Cupertino on September 12, 2024 with $500M budget.", "ner"),
-    ("Sundar Pichai visited London yesterday for the AI summit.", "ner"),
-    # Code Debug
-    ("def sum_list(items):\n  for i in range(len(items) + 1):\n    print(items[i])", "code_debug"),
-    ("for (int i = 0; i <= n; i++) { arr[i] = 0; }", "code_debug"),
-    # Code Gen
-    ("Write a Python function to reverse a string.", "code_gen"),
-    ("implement binary search in python", "code_gen"),
-    ("give me code for merge sort", "code_gen"),
-    ("create a fastapi route for user authentication", "code_gen"),
-    # Summarization
-    ("CogniFlow is an intelligent multi-engine task router designed for high-efficiency computational dispatch. It supports eight solver categories including deterministic mathematics, lightweight sentiment analysis, and named entity recognition.", "summarization"),
-    ("summarize the key highlights of the quarterly infrastructure performance report", "summarization"),
-    # Logical Reasoning
-    ("All humans are mortal. Socrates is a human. Is Socrates mortal?", "logical"),
-    ("If A implies B and B implies C, does A imply C?", "logical"),
-    # Factual Knowledge
-    ("explain queue in details", "factual"),
-    ("Explain a binary tree", "factual"),
-    ("What is the difference between a binary tree and BST?", "factual"),
-    ("What is the time complexity of bubble sort?", "factual"),
-]
-
-MATH_CORRECTNESS_BENCHMARK = [
-    ("Calculate 125 * 64", 8000),
-    ("45% of 320", 144),
-    ("10 + 20 * 3", 70),
-    ("sqrt(144)", 12),
-    ("2 ** 8", 256),
-    ("100 / 4", 25),
-    ("(15 - 5) * (8 + 2)", 100),
-]
-
-RETRIEVAL_BENCHMARK = [
-    # Relevant hits: Should score >= 0.55
-    {
-        "title": "Queue (abstract data type)",
-        "snippet": "In computer science, a queue is a collection of entities that are maintained in a sequence and can be modified by the addition of entities at one end and the removal from the other.",
-        "tokens": ["queue", "abstract", "data", "type"],
-        "query": "explain queue",
-        "expect_relevant": True
-    },
-    {
-        "title": "Binary tree",
-        "snippet": "In computer science, a binary tree is a k-ary tree data structure in which each node has at most two children, which are referred to as the left child and the right child.",
-        "tokens": ["binary", "tree"],
-        "query": "explain binary tree",
-        "expect_relevant": True
-    },
-    # Irrelevant noise hits: Must score < 0.55
-    {
-        "title": "Kevin Hart: Let Me Explain",
-        "snippet": "Kevin Hart: Let Me Explain is a 2013 American stand-up comedy concert film featuring Kevin Hart.",
-        "tokens": ["binary", "tree", "node"],
-        "query": "explain binary tree",
-        "expect_relevant": False
-    },
-    {
-        "title": "Shifting (syntax)",
-        "snippet": "In linguistics, shifting or dislocation is a syntactic movement process where an element shifts out of its canonical position.",
-        "tokens": ["binary", "tree"],
-        "query": "explain me binary tree",
-        "expect_relevant": False
-    }
-]
+from backend.benchmark_engine import BenchmarkEngine
+from backend.benchmark_dataset import BENCHMARK_CATEGORIES
 
 
-def get_peak_ram_mb() -> float:
-    """Returns peak resident set size in megabytes."""
-    rusage = resource.getrusage(resource.RUSAGE_SELF)
-    # On macOS ru_maxrss is in bytes; on Linux in kilobytes
-    if sys.platform == "darwin":
-        return round(rusage.ru_maxrss / (1024 * 1024), 2)
+def print_banner():
+    print("=" * 80)
+    print("  CogniFlow Empirical Benchmark & Quality Evaluation Engine")
+    print("  Sole Cloud Provider: Groq (qwen/qwen3.8-27b) | 8 Local Deterministic Engines")
+    print("=" * 80)
+
+
+def print_report_summary(report: Dict[str, Any]):
+    summary = report["summary"]
+    tokens = report["token_accounting"]
+    lat = report["latency_metrics_ms"]
+    base = report["baseline_comparison"]
+
+    print("\n" + "-" * 80)
+    print("  EXECUTIVE SUMMARY")
+    print("-" * 80)
+    print(f"  Execution Mode:               {report['mode'].upper()}")
+    print(f"  Total Test Cases:             {summary['total_cases']}")
+    print(f"  Cases Passed:                 {summary['passed_cases']} / {summary['total_cases']}")
+    print(f"  Overall Completion Rate:      {summary['task_completion_rate_pct']}%")
+    print(f"  Deterministic Correctness:    {summary.get('deterministic_correctness_pct', 'N/A')}% ({summary.get('deterministic_passed_cases', 0)}/{summary.get('deterministic_total_cases', 0)})")
+    print(f"  Routing Accuracy:             {summary['routing_accuracy_pct']}%")
+    print(f"  AI Answer Quality:            {summary.get('ai_answer_quality_pct', 'N/A')}% ({summary.get('ai_evaluation_status', 'N/A')})")
+    print(f"  Zero-Token Solves:            {summary['deterministic_zero_token_solves']} ({summary['zero_token_solve_ratio_pct']}%)")
+    print(f"  Error / Failure Rate:         {summary['error_rate_pct']}%")
+
+    print("\n" + "-" * 80)
+    print("  TOKEN ACCOUNTING & BASELINE SAVINGS")
+    print("-" * 80)
+    is_live = report.get("mode") == "live_groq"
+    token_label = "Actual Groq LLM Tokens" if is_live else "Simulated Contract Tokens (Offline)"
+    print(f"  {token_label:28}: {tokens['total_actual_llm_tokens']} (Input: {tokens['total_actual_input_tokens']}, Output: {tokens['total_actual_output_tokens']})")
+    print(f"  Total Provider Calls:         {tokens['total_llm_calls']}")
+    print(f"  Deterministic Solver Tokens:  {tokens['deterministic_tokens_consumed']} (Strict Zero-Token Guarantee)")
+    print(f"  All-to-LLM Baseline Tokens:   {base['baseline_total_tokens']} (Theoretical Estimate)")
+    print(f"  Estimated Tokens Saved:       {base['estimated_tokens_saved']}")
+    print(f"  Estimated Token Savings:      {base['token_savings_pct']}% (vs Theoretical Baseline)")
+    print(f"  Baseline Speedup Factor:      {base['latency_speedup_factor']}")
+
+    print("\n" + "-" * 80)
+    print("  RUNTIME LATENCY & PERFORMANCE (ms)")
+    print("-" * 80)
+    print(f"  Deterministic Solver Avg:     {lat.get('deterministic_solver_average_latency_ms', 'N/A')} ms (measured local)")
+    print(f"  LLM Latency Avg:              {lat.get('llm_average_latency_ms', 'N/A')} ms ({lat.get('llm_latency_measurement', 'N/A')})")
+    print(f"  Overall Average Latency:      {lat.get('average_latency_ms', 'N/A')} ms")
+    print(f"  Overall Median Latency:       {lat.get('median_latency_ms', 'N/A')} ms")
+    print(f"  Overall P95 Latency:          {lat.get('p95_latency_ms', 'N/A')} ms")
+    print(f"  Min / Max Latency:            {lat.get('min_latency_ms', 'N/A')} ms / {lat.get('max_latency_ms', 'N/A')} ms")
+    print(f"  Peak RAM Usage:               {report['resource_usage']['peak_ram_mb']} MB")
+    print(f"  Total Suite Duration:         {lat.get('total_suite_elapsed_sec', 'N/A')}s")
+
+    print("\n" + "-" * 80)
+    print("  SOLVER ENGINE DISPATCH DISTRIBUTION")
+    print("-" * 80)
+    for solver, count in report["solver_distribution"].items():
+        pct = round(count / summary["total_cases"] * 100, 1)
+        print(f"    • {solver:22}: {count:3} cases ({pct:5.1f}%)")
+
+    print("\n" + "-" * 80)
+    print("  CATEGORY BREAKDOWN")
+    print("-" * 80)
+    print(f"  {'Category':26} | {'Total':5} | {'Passed':6} | {'Routing %':9} | {'LLM Tokens':10}")
+    print("  " + "-" * 66)
+    for cat, m in report["category_metrics"].items():
+        rt_pct = round(m["routing_correct"] / m["total"] * 100, 1) if m["total"] > 0 else 0
+        print(f"  {cat:26} | {m['total']:5} | {m['passed']:6} | {rt_pct:8.1f}% | {m['tokens']:10}")
+    print("=" * 80)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="CogniFlow Benchmark and Evaluation Engine")
+    parser.add_argument("--live", action="store_true", help="Execute with live Groq LLM requests (paced to stay within quotas)")
+    parser.add_argument("--category", choices=BENCHMARK_CATEGORIES, help="Run only test cases in this category")
+    parser.add_argument("--limit", type=int, help="Limit number of test cases to run")
+    parser.add_argument("--json", action="store_true", help="Print raw JSON report to stdout")
+    args = parser.parse_args()
+
+    if not args.json:
+        print_banner()
+
+    engine = BenchmarkEngine()
+    report = engine.run(live=args.live, category=args.category, limit=args.limit)
+
+    if args.json:
+        print(json.dumps(report, indent=2))
     else:
-        return round(rusage.ru_maxrss / 1024, 2)
-
-
-def run_benchmark():
-    print("=" * 70)
-    print("CogniFlow Comprehensive Empirical Benchmark Suite (Phase 12)")
-    print("=" * 70)
-
-    # 1. Classification Accuracy
-    correct_classifications = 0
-    total_classifications = len(CLASSIFICATION_BENCHMARK)
-
-    for prompt, expected in CLASSIFICATION_BENCHMARK:
-        detected = classify_intent(prompt)
-        if detected == expected:
-            correct_classifications += 1
-        else:
-            print(f"  [Classification Miss] Prompt: '{prompt[:40]}...' Expected: {expected} | Got: {detected}")
-
-    classification_acc = round((correct_classifications / total_classifications) * 100, 2)
-    print(f"\n[1] Intent Classification Accuracy: {classification_acc}% ({correct_classifications}/{total_classifications})")
-
-    # 2. Mathematical Correctness
-    math_correct = 0
-    math_total = len(MATH_CORRECTNESS_BENCHMARK)
-
-    for expr, expected_val in MATH_CORRECTNESS_BENCHMARK:
-        req = SolveRequest(task_type="math", input=expr)
-        res = solve_task(req)
-        expected_str = str(expected_val)
-        if expected_str in res.answer:
-            math_correct += 1
-        else:
-            print(f"  [Math Error] Input: '{expr}' Expected: {expected_val} | Answer: '{res.answer}'")
-
-    math_acc = round((math_correct / math_total) * 100, 2)
-    print(f"[2] Mathematical Correctness: {math_acc}% ({math_correct}/{math_total})")
-
-    # 3. Retrieval Relevance Grounding
-    retrieval_correct = 0
-    retrieval_total = len(RETRIEVAL_BENCHMARK)
-
-    for item in RETRIEVAL_BENCHMARK:
-        score = score_hit_relevance(item["title"], item["snippet"], item["tokens"], item["query"])
-        is_accepted = score >= 0.55
-        if is_accepted == item["expect_relevant"]:
-            retrieval_correct += 1
-        else:
-            print(f"  [Retrieval Discrepancy] Title: '{item['title']}' Score: {score:.3f} | Expected Relevant: {item['expect_relevant']}")
-
-    retrieval_acc = round((retrieval_correct / retrieval_total) * 100, 2)
-    print(f"[3] Retrieval Relevance Discrimination: {retrieval_acc}% ({retrieval_correct}/{retrieval_total})")
-
-    # 4. Code Generation Executability & Verification
-    code_test_cases = [
-        ("Write a Python function to reverse a string.", "reverse_string('cogniflow') == 'wolfingoc'"),
-        ("implement merge sort in python", "merge_sort([5, 2, 8, 1]) == [1, 2, 5, 8]"),
-        ("implement bubble sort in python", "bubble_sort([4, 1, 3]) == [1, 3, 4]"),
-    ]
-    code_valid_syntax = 0
-    code_executable_correct = 0
-
-    for prompt, test_assertion in code_test_cases:
-        req = SolveRequest(task_type="code_gen", input=prompt)
-        res = solve_task(req)
-
-        # Extract python code block
-        code_match = ""
-        for part in res.answer.split("```python"):
-            if "```" in part:
-                code_match = part.split("```")[0]
-                break
-
-        if code_match:
-            try:
-                ast.parse(code_match)
-                code_valid_syntax += 1
-
-                # Execute in safe isolated dict
-                local_scope = {}
-                exec(code_match, {}, local_scope)
-                if eval(test_assertion, {}, local_scope):
-                    code_executable_correct += 1
-            except Exception as e:
-                print(f"  [Code Exec Error] {prompt}: {e}")
-
-    code_syntax_rate = round((code_valid_syntax / len(code_test_cases)) * 100, 2)
-    code_exec_rate = round((code_executable_correct / len(code_test_cases)) * 100, 2)
-    print(f"[4] Code Gen Syntax Validity: {code_syntax_rate}% | Executable Correctness: {code_exec_rate}%")
-
-    # 5. Full Pipeline Latency & Telemetry Evaluation
-    latencies: List[float] = []
-    total_tokens = 0
-    input_tokens = 0
-    output_tokens = 0
-    zero_token_count = 0
-    solver_counts: Dict[str, int] = {}
-    total_tasks = 0
-
-    eval_prompts = [item[0] for item in CLASSIFICATION_BENCHMARK]
-
-    for p in eval_prompts:
-        start_t = time.perf_counter()
-        req = SolveRequest(task_type="smart", input=p)
-        res = solve_task(req)
-        elapsed_ms = round((time.perf_counter() - start_t) * 1000, 2)
-        latencies.append(elapsed_ms)
-        total_tasks += 1
-
-        solver = res.solver
-        solver_counts[solver] = solver_counts.get(solver, 0) + 1
-
-        if res.token_usage:
-            tok = res.token_usage.total_tokens
-            total_tokens += tok
-            input_tokens += res.token_usage.input_tokens
-            output_tokens += res.token_usage.output_tokens
-            if tok == 0:
-                zero_token_count += 1
-        else:
-            zero_token_count += 1
-
-    avg_latency = round(statistics.mean(latencies), 2)
-    median_latency = round(statistics.median(latencies), 2)
-    latencies_sorted = sorted(latencies)
-    p95_idx = int(math.ceil(0.95 * len(latencies_sorted))) - 1
-    p95_latency = round(latencies_sorted[p95_idx], 2)
-    peak_ram = get_peak_ram_mb()
-
-    zero_token_ratio = round((zero_token_count / total_tasks) * 100, 2)
-
-    print("\n" + "-" * 70)
-    print("RUNTIME PERFORMANCE & RESOURCE METRICS")
-    print("-" * 70)
-    print(f"Total Requests Evaluated:       {total_tasks}")
-    print(f"Average Latency:                {avg_latency} ms")
-    print(f"Median Latency:                 {median_latency} ms")
-    print(f"P95 Latency:                    {p95_latency} ms")
-    print(f"Peak RAM Usage:                 {peak_ram} MB")
-    print(f"Zero-Token Solve Ratio:         {zero_token_ratio}% ({zero_token_count}/{total_tasks})")
-    print(f"Total LLM Tokens Consumed:      {total_tokens} (Input: {input_tokens}, Output: {output_tokens})")
-    print("Paid External API Invocations:  0 (Strict Localhost Zero-Cost Policy)")
-    print(f"Solver Engine Dispatch:         {dict(solver_counts)}")
-    print("=" * 70)
-
-    results_data = {
-        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "classification_accuracy_pct": classification_acc,
-        "math_correctness_pct": math_acc,
-        "retrieval_relevance_pct": retrieval_acc,
-        "code_syntax_validity_pct": code_syntax_rate,
-        "code_execution_correctness_pct": code_exec_rate,
-        "total_requests": total_tasks,
-        "average_latency_ms": avg_latency,
-        "median_latency_ms": median_latency,
-        "p95_latency_ms": p95_latency,
-        "peak_ram_mb": peak_ram,
-        "zero_token_ratio_pct": zero_token_ratio,
-        "total_llm_tokens": total_tokens,
-        "input_tokens": input_tokens,
-        "output_tokens": output_tokens,
-        "paid_external_api_calls": 0,
-        "solver_breakdown": solver_counts
-    }
-
-    out_path = os.path.join(PROJECT_ROOT, "benchmark_results.json")
-    with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(results_data, f, indent=2)
-    print(f"Benchmark results successfully saved to: {out_path}\n")
-
-    return results_data
+        print_report_summary(report)
+        print(f"\n[+] Saved detailed JSON report: {os.path.join(CURRENT_DIR, 'benchmark_report.json')}")
+        print(f"[+] Saved summary CSV:         {os.path.join(CURRENT_DIR, 'benchmark_summary.csv')}")
+        print(f"[+] Synced root results:       {os.path.join(PROJECT_ROOT, 'benchmark_results.json')}\n")
 
 
 if __name__ == "__main__":
-    run_benchmark()
+    main()

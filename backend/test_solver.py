@@ -260,7 +260,8 @@ class TestCogniFlowCore(unittest.TestCase):
         self.assertIn("local_llm", health)
         self.assertEqual(health["local_llm"]["status"], "unavailable")
         self.assertIn("paid_cloud_api", health)
-        self.assertEqual(health["paid_cloud_api"]["status"], "not_configured")
+        expected_cloud_status = "operational" if health["paid_cloud_api"]["configured"] else "not_configured"
+        self.assertEqual(health["paid_cloud_api"]["status"], expected_cloud_status)
 
     def test_m_timeout_bounded_fallback(self):
         """Test M: Timeout and Bounded Retries.
@@ -315,16 +316,23 @@ class TestCogniFlowCore(unittest.TestCase):
         self.assertEqual(sent_res.token_usage.total_tokens, 0)
         self.assertEqual(sent_res.token_usage.llm_calls, 0)
 
-        # 3. Code Generation -> Estimated tokens
+        # 3. Code Generation -> Actual (if live LLM configured) or Estimated tokens
         code_res = solve_task(SolveRequest(task_type="code_gen", input="Write a Python function to reverse a string."))
         self.assertGreater(code_res.token_usage.total_tokens, 0)
-        self.assertEqual(code_res.token_usage.token_count_method, "estimated")
+        self.assertIn(code_res.token_usage.token_count_method, ["actual", "estimated"])
 
 
 class TestLiveApiAndBatch(unittest.TestCase):
     """Test Q: Live API & Batch Runner Integration."""
 
     BASE_URL = "http://127.0.0.1:8000"
+
+    def setUp(self):
+        try:
+            with urllib.request.urlopen(f"{self.BASE_URL}/health", timeout=1.0):
+                pass
+        except Exception:
+            self.skipTest(f"Live backend server not reachable at {self.BASE_URL}")
 
     def test_q_live_batch_endpoint(self):
         """Tests POST /batch endpoint with multiple tasks preserving input order."""
@@ -865,6 +873,414 @@ class TestGeneralAIFunctionalSuite(unittest.TestCase):
         self.assertEqual(res.solver, "general_llm")
         self.assertEqual(res.usage.total_tokens, 130)
         self.assertTrue(res.usage.fallback_used)
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_regression_explain_binary_trees_routes_to_general_ai(self, mock_urlopen):
+        """1. 'Explain binary trees in simple language' with code request routes to general AI adapter."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+        mock_resp = unittest.mock.MagicMock()
+        mock_resp.status = 200
+        mock_payload = {
+            "model": "qwen/qwen3.8-27b",
+            "choices": [{"message": {"role": "assistant", "content": "A binary tree is a hierarchical data structure where each node has at most two children."}}],
+            "usage": {"prompt_tokens": 40, "completion_tokens": 50, "total_tokens": 90}
+        }
+        mock_resp.read.return_value = json.dumps(mock_payload).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        req = SolveRequest(task_type="smart", input="Explain binary trees in simple language. Give a working C program for binary tree traversal and explain the code step by step.")
+        res = solve_task(req)
+
+        self.assertTrue(res.success)
+        self.assertEqual(res.solver, "general_llm")
+        self.assertIn("binary tree", res.answer.lower())
+        self.assertNotIn("Explain_binary_trees_in_simple", res.answer)
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_regression_write_c_program_routes_to_configured_model(self, mock_urlopen):
+        """2. 'Write a C program for binary tree traversal' routes to configured model."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+        mock_resp = unittest.mock.MagicMock()
+        mock_resp.status = 200
+        mock_payload = {
+            "model": "qwen/qwen3.8-27b",
+            "choices": [{"message": {"role": "assistant", "content": "```c\n#include <stdio.h>\nstruct Node { int data; struct Node *left, *right; };\n```"}}],
+            "usage": {"prompt_tokens": 35, "completion_tokens": 60, "total_tokens": 95}
+        }
+        mock_resp.read.return_value = json.dumps(mock_payload).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        req = SolveRequest(task_type="smart", input="Write a C program for binary tree traversal")
+        res = solve_task(req)
+
+        self.assertTrue(res.success)
+        self.assertEqual(res.solver, "general_llm")
+        self.assertIn("#include <stdio.h>", res.answer)
+        self.assertEqual(res.usage.counting_method, "actual")
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_regression_follow_up_includes_conversation_context(self, mock_urlopen):
+        """3. Follow-up 'Now explain the insertion operation' includes conversation context."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+        captured_payloads = []
+
+        def side_effect(req, **kwargs):
+            body = json.loads(req.data.decode("utf-8"))
+            captured_payloads.append(body)
+            mock_resp = unittest.mock.MagicMock()
+            mock_resp.status = 200
+            payload = {
+                "model": "qwen/qwen3.8-27b",
+                "choices": [{"message": {"role": "assistant", "content": "To insert a node into a binary tree, we locate the appropriate parent and attach the new child."}}],
+                "usage": {"prompt_tokens": 55, "completion_tokens": 40, "total_tokens": 95}
+            }
+            mock_resp.read.return_value = json.dumps(payload).encode("utf-8")
+            cm = unittest.mock.MagicMock()
+            cm.__enter__.return_value = mock_resp
+            return cm
+
+        mock_urlopen.side_effect = side_effect
+        history = [
+            {"role": "user", "content": "Explain binary trees in simple language."},
+            {"role": "assistant", "content": "A binary tree is a tree data structure with at most two children per node."}
+        ]
+        req = SolveRequest(
+            task_type="smart",
+            input="Now explain the insertion operation",
+            conversation_history=history
+        )
+        res = solve_task(req)
+
+        self.assertTrue(res.success)
+        self.assertEqual(len(captured_payloads), 1)
+        messages_sent = captured_payloads[0]["messages"]
+        self.assertEqual(len(messages_sent), 4)
+        self.assertEqual(messages_sent[1]["content"], "Explain binary trees in simple language.")
+        self.assertEqual(messages_sent[-1]["content"], "Now explain the insertion operation")
+
+    def test_regression_math_continues_zero_llm_calls(self):
+        """4. '125 * 64' continues using the deterministic math solver with 0 LLM calls."""
+        req = SolveRequest(task_type="smart", input="125 * 64")
+        res = solve_task(req)
+
+        self.assertTrue(res.success)
+        self.assertEqual(res.solver, "python")
+        self.assertIn("8000", res.answer)
+        self.assertEqual(res.usage.llm_calls, 0)
+        self.assertEqual(res.usage.total_tokens, 0)
+        self.assertEqual(res.usage.counting_method, "not_applicable")
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_regression_successful_model_response_not_replaced_by_template(self, mock_urlopen):
+        """5. A successful model response is not replaced by a hardcoded template."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+        real_generated_text = "Here is the dynamic custom response from Groq: complete and detailed."
+        mock_resp = unittest.mock.MagicMock()
+        mock_resp.status = 200
+        mock_payload = {
+            "model": "qwen/qwen3.8-27b",
+            "choices": [{"message": {"role": "assistant", "content": real_generated_text}}],
+            "usage": {"prompt_tokens": 20, "completion_tokens": 15, "total_tokens": 35}
+        }
+        mock_resp.read.return_value = json.dumps(mock_payload).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        req = SolveRequest(task_type="code_gen", input="Write a C program for binary tree traversal")
+        res = solve_task(req)
+
+        self.assertTrue(res.success)
+        self.assertEqual(res.answer, real_generated_text)
+        self.assertNotIn("def Explain_binary_trees", res.answer)
+        self.assertNotIn("result = True", res.answer)
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_regression_actual_token_usage_and_honest_missing_handling(self, mock_urlopen):
+        """6. Actual provider token usage is displayed as actual, while missing metadata is handled honestly."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+
+        # Case A: Actual reported tokens
+        mock_resp_a = unittest.mock.MagicMock()
+        mock_resp_a.status = 200
+        mock_resp_a.read.return_value = json.dumps({
+            "model": "qwen/qwen3.8-27b",
+            "choices": [{"message": {"role": "assistant", "content": "Actual token test response"}}],
+            "usage": {"prompt_tokens": 42, "completion_tokens": 18, "total_tokens": 60}
+        }).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp_a
+
+        res_a = solve_task(SolveRequest(task_type="general_llm", input="Test prompt actual"))
+        self.assertEqual(res_a.usage.counting_method, "actual")
+        self.assertEqual(res_a.usage.total_tokens, 60)
+
+        # Case B: Missing metadata handled honestly as estimated
+        mock_resp_b = unittest.mock.MagicMock()
+        mock_resp_b.status = 200
+        mock_resp_b.read.return_value = json.dumps({
+            "model": "qwen/qwen3.8-27b",
+            "choices": [{"message": {"role": "assistant", "content": "Missing metadata test response"}}]
+        }).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp_b
+
+        res_b = solve_task(SolveRequest(task_type="general_llm", input="Test prompt missing"))
+        self.assertEqual(res_b.usage.counting_method, "estimated")
+        self.assertGreater(res_b.usage.total_tokens, 0)
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_regression_model_failure_produces_honest_error(self, mock_urlopen):
+        """7. A model timeout or invalid credential produces an honest failure rather than a fake successful answer."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+
+        http_err = urllib.error.HTTPError(
+            url="https://api.groq.com/openai/v1/chat/completions",
+            code=401,
+            msg="Unauthorized",
+            hdrs={},
+            fp=io.BytesIO(b'{"error":{"message":"Invalid API Key"}}')
+        )
+        mock_urlopen.side_effect = http_err
+
+        req = SolveRequest(task_type="code_gen", input="Write a C program for binary tree traversal")
+        res = solve_task(req)
+
+        self.assertFalse(res.success)
+        self.assertIn("Authentication Error (HTTP 401)", res.answer)
+        self.assertNotIn("def Explain_binary_trees", res.answer)
+        self.assertNotIn("result = True", res.answer)
+
+
+class TestIntelligentMinimumTokenRoutingSuite(unittest.TestCase):
+    """Verifies Intelligent Minimum-Token Routing and Groq-only optimizations."""
+
+    def test_natural_language_arithmetic_zero_tokens(self):
+        """1. Arithmetic in natural language routes to deterministic math solver with 0 tokens."""
+        queries = [
+            ("divide 100 by 4", "25"),
+            ("multiply 15 and 8", "120"),
+            ("add 45 and 55", "100"),
+            ("subtract 20 from 100", "80"),
+            ("2 to the power of 8", "256"),
+            ("what is 25 * 4?", "100"),
+        ]
+        for query, expected_num in queries:
+            with self.subTest(query=query):
+                res = solve_task(SolveRequest(task_type="smart", input=query))
+                self.assertTrue(res.success)
+                self.assertEqual(res.solver, "python")
+                self.assertIn(expected_num, res.answer)
+                self.assertEqual(res.usage.llm_calls, 0)
+                self.assertEqual(res.usage.total_tokens, 0)
+                self.assertEqual(res.usage.counting_method, "not_applicable")
+
+    def test_multi_task_all_deterministic_zero_tokens(self):
+        """2. Compound multi-task query with all deterministic parts consumes exactly 0 LLM tokens."""
+        query = "Calculate 125 * 64 and analyze sentiment of 'The product is great!'"
+        res = solve_task(SolveRequest(task_type="smart", input=query))
+
+        self.assertTrue(res.success)
+        self.assertIn("8000", res.answer)
+        self.assertIn("Positive", res.answer)
+        self.assertEqual(res.usage.llm_calls, 0)
+        self.assertEqual(res.usage.total_tokens, 0)
+        self.assertEqual(res.usage.counting_method, "not_applicable")
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_multi_task_deterministic_plus_groq(self, mock_urlopen):
+        """3. Compound query with deterministic math + general question delegates math locally (0 tokens)
+        and calls Groq only for the general explanation part.
+        """
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+        captured_payloads = []
+
+        def side_effect(req, *args, **kwargs):
+            body = req.data.decode("utf-8")
+            captured_payloads.append(json.loads(body))
+            mock_resp = unittest.mock.MagicMock()
+            mock_resp.status = 200
+            payload = {
+                "model": "qwen/qwen3.8-27b",
+                "choices": [{"message": {"role": "assistant", "content": "A binary tree is a non-linear data structure."}}],
+                "usage": {"prompt_tokens": 45, "completion_tokens": 60, "total_tokens": 105}
+            }
+            mock_resp.read.return_value = json.dumps(payload).encode("utf-8")
+            cm = unittest.mock.MagicMock()
+            cm.__enter__.return_value = mock_resp
+            return cm
+
+        mock_urlopen.side_effect = side_effect
+
+        query = "What is 15 * 8? Also explain binary trees in simple language."
+        res = solve_task(SolveRequest(task_type="smart", input=query))
+
+        self.assertTrue(res.success)
+        self.assertIn("120", res.answer)
+        self.assertIn("binary tree", res.answer.lower())
+        self.assertEqual(len(captured_payloads), 1)
+        # Groq was sent only the explanation sub-task, NOT the math!
+        prompt_sent = captured_payloads[0]["messages"][-1]["content"].lower()
+        self.assertIn("binary tree", prompt_sent)
+        self.assertNotIn("15 * 8", prompt_sent)
+
+        self.assertEqual(res.usage.llm_calls, 1)
+        self.assertEqual(res.usage.total_tokens, 105)
+        self.assertEqual(res.usage.counting_method, "actual")
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_unrelated_history_filtered_to_minimize_tokens(self, mock_urlopen):
+        """4. Unrelated prior conversation history is filtered out to minimize Groq token usage."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+        captured_payloads = []
+
+        def side_effect(req, *args, **kwargs):
+            body = req.data.decode("utf-8")
+            captured_payloads.append(json.loads(body))
+            mock_resp = unittest.mock.MagicMock()
+            mock_resp.status = 200
+            payload = {
+                "model": "qwen/qwen3.8-27b",
+                "choices": [{"message": {"role": "assistant", "content": "Docker is a containerization platform."}}],
+                "usage": {"prompt_tokens": 30, "completion_tokens": 25, "total_tokens": 55}
+            }
+            mock_resp.read.return_value = json.dumps(payload).encode("utf-8")
+            cm = unittest.mock.MagicMock()
+            cm.__enter__.return_value = mock_resp
+            return cm
+
+        mock_urlopen.side_effect = side_effect
+
+        # History contains unrelated math and sentiment
+        unrelated_history = [
+            {"role": "user", "content": "Calculate 125 * 64"},
+            {"role": "assistant", "content": "8000"},
+            {"role": "user", "content": "What is the sentiment of 'Great product!'"},
+            {"role": "assistant", "content": "Positive"}
+        ]
+
+        res = solve_task(SolveRequest(
+            task_type="smart",
+            input="What is Docker?",
+            conversation_history=unrelated_history
+        ))
+
+        self.assertTrue(res.success)
+        self.assertEqual(len(captured_payloads), 1)
+        messages_sent = captured_payloads[0]["messages"]
+        # Unrelated turns were filtered out, only system prompt + current prompt sent!
+        self.assertEqual(len(messages_sent), 2)
+        self.assertEqual(messages_sent[0]["role"], "system")
+        self.assertEqual(messages_sent[1]["content"], "What is Docker?")
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_follow_up_preserves_relevant_context(self, mock_urlopen):
+        """5. Relevant history is preserved for follow-up questions referencing previous turns."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+        captured_payloads = []
+
+        def side_effect(req, *args, **kwargs):
+            body = req.data.decode("utf-8")
+            captured_payloads.append(json.loads(body))
+            mock_resp = unittest.mock.MagicMock()
+            mock_resp.status = 200
+            payload = {
+                "model": "qwen/qwen3.8-27b",
+                "choices": [{"message": {"role": "assistant", "content": "To insert a node into a BST, compare values and place left or right."}}],
+                "usage": {"prompt_tokens": 60, "completion_tokens": 40, "total_tokens": 100}
+            }
+            mock_resp.read.return_value = json.dumps(payload).encode("utf-8")
+            cm = unittest.mock.MagicMock()
+            cm.__enter__.return_value = mock_resp
+            return cm
+
+        mock_urlopen.side_effect = side_effect
+
+        relevant_history = [
+            {"role": "user", "content": "What is a Binary Search Tree?"},
+            {"role": "assistant", "content": "A BST is a node-based binary tree data structure where left < root < right."}
+        ]
+
+        res = solve_task(SolveRequest(
+            task_type="smart",
+            input="How do I insert a node into it?",
+            conversation_history=relevant_history
+        ))
+
+        self.assertTrue(res.success)
+        self.assertEqual(len(captured_payloads), 1)
+        messages_sent = captured_payloads[0]["messages"]
+        # System + user + assistant + user = 4 messages
+        self.assertEqual(len(messages_sent), 4)
+        self.assertIn("binary search tree", messages_sent[1]["content"].lower())
+        self.assertEqual(messages_sent[-1]["content"], "How do I insert a node into it?")
+
+    def test_context_isolation_between_sessions(self):
+        """6. Context and session_id are strictly isolated per request."""
+        res_a = solve_task(SolveRequest(task_type="math", input="25 * 4", session_id="session_alpha"))
+        res_b = solve_task(SolveRequest(task_type="sentiment", input="Great job!", session_id="session_beta"))
+
+        self.assertEqual(res_a.session_id, "session_alpha")
+        self.assertEqual(res_b.session_id, "session_beta")
+        self.assertNotEqual(res_a.session_id, res_b.session_id)
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_quality_check_triggers_single_retry_and_aggregates_tokens(self, mock_urlopen):
+        """7. Obvious placeholder triggers at most 1 retry, aggregating tokens from both calls."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+        call_count = 0
+
+        def side_effect(req, *args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            mock_resp = unittest.mock.MagicMock()
+            mock_resp.status = 200
+
+            if call_count == 1:
+                content = "def test_fn(): pass"
+                prompt_tok, comp_tok = 20, 10
+            else:
+                content = "```python\ndef test_fn():\n    return 'complete'\n```"
+                prompt_tok, comp_tok = 35, 25
+
+            payload = {
+                "model": "qwen/qwen3.8-27b",
+                "choices": [{"message": {"role": "assistant", "content": content}}],
+                "usage": {"prompt_tokens": prompt_tok, "completion_tokens": comp_tok, "total_tokens": prompt_tok + comp_tok}
+            }
+            mock_resp.read.return_value = json.dumps(payload).encode("utf-8")
+            cm = unittest.mock.MagicMock()
+            cm.__enter__.return_value = mock_resp
+            return cm
+
+        mock_urlopen.side_effect = side_effect
+
+        res = solve_task(SolveRequest(task_type="general_llm", input="Implement test_fn"))
+
+        self.assertTrue(res.success)
+        self.assertEqual(call_count, 2, "Must perform exactly 1 retry (2 calls total)")
+        self.assertEqual(res.usage.llm_calls, 2)
+        self.assertEqual(res.usage.input_tokens, 55)
+        self.assertEqual(res.usage.output_tokens, 35)
+        self.assertEqual(res.usage.total_tokens, 90)
+        self.assertEqual(res.usage.counting_method, "actual")
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_groq_rate_limit_produces_honest_error(self, mock_urlopen):
+        """8. HTTP 429 rate limit produces honest error response without fabricated answers."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+        http_err = urllib.error.HTTPError(
+            url="https://api.groq.com/openai/v1/chat/completions",
+            code=429,
+            msg="Too Many Requests",
+            hdrs={},
+            fp=io.BytesIO(b'{"error":{"message":"Rate limit exceeded on OTPM"}}')
+        )
+        mock_urlopen.side_effect = http_err
+
+        res = solve_task(SolveRequest(task_type="general_llm", input="Explain quantum computing"))
+
+        self.assertFalse(res.success)
+        self.assertIn("Rate Limit Exceeded (HTTP 429)", res.answer)
+        self.assertEqual(res.usage.total_tokens, 0)
+        self.assertEqual(res.usage.counting_method, "unavailable")
+        self.assertNotIn("def Explain_", res.answer)
 
 
 if __name__ == "__main__":

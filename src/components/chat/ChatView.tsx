@@ -179,8 +179,13 @@ export const ChatView: React.FC<ChatViewProps> = ({
     },
   ];
 
-  const getTaskLabel = (type?: string) => {
+  const getTaskLabel = (type?: string, solver?: string, engineName?: string) => {
+    if (solver === 'general_llm' || engineName?.toLowerCase().includes('groq')) {
+      return engineName || 'Groq Cloud (General AI)';
+    }
     switch (type) {
+      case 'general_llm':
+        return 'General AI';
       case 'code_gen':
         return 'Code Generator';
       case 'code_debug':
@@ -276,7 +281,7 @@ export const ChatView: React.FC<ChatViewProps> = ({
                       <span className="font-semibold text-emerald-400">CogniFlow</span>
                       <span className="text-outline-variant/40">•</span>
                       <span className="text-[11px] text-on-surface-variant/80">
-                        {getTaskLabel(msg.taskType)}
+                        {getTaskLabel(msg.taskType, msg.solver, msg.solverDetails?.engine)}
                       </span>
                       {msg.processingTimeMs && (
                         <>
@@ -407,7 +412,7 @@ export const ChatView: React.FC<ChatViewProps> = ({
                         <div className="p-2 rounded-lg bg-surface-container-low border border-outline-variant/20 flex flex-col gap-0.5">
                           <span className="text-[10px] text-on-surface-variant uppercase">Detected Category</span>
                           <span className="font-semibold text-on-surface truncate">
-                            {getTaskLabel(msg.taskType) || 'General Solver'}
+                            {getTaskLabel(msg.taskType, msg.solver, msg.solverDetails?.engine) || 'General Solver'}
                           </span>
                         </div>
 
