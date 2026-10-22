@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChatMessage, TaskType, TASK_TYPES } from '../../types/solver';
+import { ResponseUsage } from './ResponseUsage';
 
 interface ChatViewProps {
   messages: ChatMessage[];
@@ -305,7 +306,18 @@ export const ChatView: React.FC<ChatViewProps> = ({
                         <p className="text-on-surface">{msg.error}</p>
                       </div>
                     ) : (
-                      <FormattedMessage text={msg.text} />
+                      <>
+                        <FormattedMessage text={msg.text} />
+                        {!isUser && (
+                          <ResponseUsage
+                            usage={msg.usage || msg.tokenUsage}
+                            tokenUsage={msg.tokenUsage}
+                            solver={msg.solver}
+                            processingTimeMs={msg.processingTimeMs}
+                            engineName={msg.solverDetails?.engine}
+                          />
+                        )}
+                      </>
                     )}
                   </div>
 

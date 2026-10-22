@@ -126,6 +126,7 @@ export async function solveTask(
     solver_details: data.solver_details,
     memory_rss_mb: data.memory_rss_mb,
     token_usage: data.token_usage,
+    usage: data.usage,
   };
 
   if (!solveResult.success && solveResult.error) {

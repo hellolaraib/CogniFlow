@@ -48,9 +48,20 @@ class TokenUsage(BaseModel):
     input_tokens: int = 0
     output_tokens: int = 0
     total_tokens: int = 0
-    token_count_method: str = "not_applicable"  # "actual" | "estimated" | "not_applicable"
+    token_count_method: str = "not_applicable"  # "actual" | "estimated" | "not_applicable" | "unavailable"
     processing_time_ms: float = 0.0
     estimated_cost: Optional[float] = None
+    fallback_used: bool = False
+
+class UsageMetadata(BaseModel):
+    input_tokens: int = 0
+    output_tokens: int = 0
+    total_tokens: int = 0
+    llm_calls: int = 0
+    model: Optional[str] = None
+    counting_method: str = "not_applicable"  # "actual" | "estimated" | "not_applicable" | "unavailable"
+    solver: Optional[str] = None
+    processing_time_ms: Optional[float] = None
     fallback_used: bool = False
 
 class SolveResponse(BaseModel):
@@ -64,6 +75,7 @@ class SolveResponse(BaseModel):
     solver_details: Optional[Dict[str, Any]] = None
     memory_rss_mb: Optional[float] = None
     token_usage: Optional[TokenUsage] = None
+    usage: Optional[UsageMetadata] = None
 
 class BatchSolveRequest(BaseModel):
     tasks: List[SolveRequest]
@@ -1971,6 +1983,71 @@ def fetch_online_knowledge(query: str) -> Optional[Dict[str, Any]]:
     return None
 
 
+def query_local_llm_if_available(prompt: str, system_prompt: str = "") -> Optional[Dict[str, Any]]:
+    """Attempts to query a local inference engine (Ollama on 11434 or llama.cpp on 8080).
+    If available, returns the response text along with exact prompt and completion token counts
+    reported by the inference server. If unavailable or times out, returns None safely.
+    """
+    # 1. Try Ollama daemon on http://127.0.0.1:11434
+    try:
+        ollama_url = "http://127.0.0.1:11434/api/generate"
+        payload = json.dumps({
+            "model": "llama3.2",
+            "prompt": prompt,
+            "system": system_prompt or "You are CogniFlow AI assistant. Provide concise, accurate technical responses.",
+            "stream": False
+        }).encode("utf-8")
+        req = urllib.request.Request(ollama_url, data=payload, headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=1.0) as resp:
+            if resp.status == 200:
+                data = json.loads(resp.read().decode("utf-8"))
+                response_text = data.get("response", "")
+                prompt_tokens = data.get("prompt_eval_count", 0)
+                eval_tokens = data.get("eval_count", 0)
+                model_name = data.get("model", "ollama/llama3.2")
+                return {
+                    "answer": response_text,
+                    "prompt_tokens": prompt_tokens,
+                    "completion_tokens": eval_tokens,
+                    "total_tokens": prompt_tokens + eval_tokens,
+                    "model": model_name,
+                    "engine": f"Local LLM ({model_name})",
+                    "counting_method": "actual"
+                }
+    except Exception:
+        pass
+
+    # 2. Try llama.cpp server on http://127.0.0.1:8080
+    try:
+        llama_url = "http://127.0.0.1:8080/completion"
+        payload = json.dumps({
+            "prompt": prompt,
+            "n_predict": 512,
+            "temperature": 0.2
+        }).encode("utf-8")
+        req = urllib.request.Request(llama_url, data=payload, headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=1.0) as resp:
+            if resp.status == 200:
+                data = json.loads(resp.read().decode("utf-8"))
+                response_text = data.get("content", "")
+                prompt_tokens = data.get("tokens_evaluated", 0)
+                eval_tokens = data.get("tokens_predicted", 0)
+                model_name = data.get("model", "llama.cpp")
+                return {
+                    "answer": response_text,
+                    "prompt_tokens": prompt_tokens,
+                    "completion_tokens": eval_tokens,
+                    "total_tokens": prompt_tokens + eval_tokens,
+                    "model": model_name,
+                    "engine": f"Local llama.cpp ({model_name})",
+                    "counting_method": "actual"
+                }
+    except Exception:
+        pass
+
+    return None
+
+
 def solve_factual(query: str) -> Dict[str, Any]:
     """Retrieves factual references, algorithm complexities, college stats, and live multi-source knowledge."""
     lower = query.lower().strip()
@@ -2047,6 +2124,22 @@ def solve_factual(query: str) -> Dict[str, Any]:
         logger.info(f"[Factual Solver] Resolved via Live Knowledge Engine (Wikipedia API)")
         return online_res
 
+    # 5b. Local LLM Fallback (if Ollama/llama.cpp is running locally)
+    local_llm_res = query_local_llm_if_available(query)
+    if local_llm_res:
+        logger.info(f"[Factual Solver] Resolved via Local LLM fallback ({local_llm_res.get('model')})")
+        return {
+            "answer": local_llm_res["answer"],
+            "engine": local_llm_res["engine"],
+            "fallback_used": True,
+            "is_llm": True,
+            "prompt_tokens": local_llm_res["prompt_tokens"],
+            "completion_tokens": local_llm_res["completion_tokens"],
+            "total_tokens": local_llm_res["total_tokens"],
+            "model": local_llm_res["model"],
+            "counting_method": local_llm_res["counting_method"]
+        }
+
     # 6. Educational Fallback Synthesizer (when external reference search yielded no hits above threshold)
     is_educational_req = any(clean_lower.startswith(k) for k in [
         "explain", "what is", "how does", "describe", "tell me about", "concept of", "difference between", "overview", "define"
@@ -2108,6 +2201,17 @@ def solve_task(payload: SolveRequest):
     request_id = f"req_{uuid.uuid4().hex[:12]}"
 
     if not raw_input:
+        usage_meta = UsageMetadata(
+            input_tokens=0,
+            output_tokens=0,
+            total_tokens=0,
+            llm_calls=0,
+            model=None,
+            counting_method="not_applicable",
+            solver="router",
+            processing_time_ms=0.1,
+            fallback_used=False
+        )
         return SolveResponse(
             success=False,
             task_type=requested_mode or "smart",
@@ -2127,7 +2231,8 @@ def solve_task(payload: SolveRequest):
                 processing_time_ms=0.1,
                 estimated_cost=0.0,
                 fallback_used=False
-            )
+            ),
+            usage=usage_meta
         )
 
     if requested_mode in ["smart", "auto", "default", ""]:
@@ -2239,9 +2344,20 @@ def solve_task(payload: SolveRequest):
             res = solve_factual(raw_input)
             answer = res["answer"]
             solver_details["engine"] = res.get("engine", "Knowledge Base")
-            solver_details["deterministic"] = True
-            solver_details["tokens_consumed"] = 0
             fallback_used = bool(res.get("fallback_used", False))
+
+            if res.get("is_llm"):
+                solver = "local_llm"
+                llm_calls = 1
+                input_tokens = res.get("prompt_tokens", 0)
+                output_tokens = res.get("completion_tokens", 0)
+                model_name = res.get("model", "Local LLM")
+                token_count_method = res.get("counting_method", "actual")
+                solver_details["deterministic"] = False
+                solver_details["tokens_consumed"] = input_tokens + output_tokens
+            else:
+                solver_details["deterministic"] = True
+                solver_details["tokens_consumed"] = 0
 
         else:
             answer = f"Processed input for task mode `{task_type}`: '{raw_input}'"
@@ -2269,6 +2385,18 @@ def solve_task(payload: SolveRequest):
             fallback_used=fallback_used
         )
 
+        usage_meta = UsageMetadata(
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            total_tokens=total_tokens,
+            llm_calls=llm_calls,
+            model=model_name,
+            counting_method=token_count_method,
+            solver=solver,
+            processing_time_ms=elapsed_ms,
+            fallback_used=fallback_used
+        )
+
         logger.info(
             f"[Task Execution] request_id='{request_id}' | task_type='{task_type}' | solver='{solver}' | "
             f"engine='{solver_details.get('engine')}' | elapsed_ms={elapsed_ms} | total_tokens={total_tokens} | success=True"
@@ -2284,7 +2412,8 @@ def solve_task(payload: SolveRequest):
             secondary_results=secondary_results,
             solver_details=solver_details,
             memory_rss_mb=14.2,
-            token_usage=token_usage
+            token_usage=token_usage,
+            usage=usage_meta
         )
 
     except Exception as e:
@@ -2303,6 +2432,17 @@ def solve_task(payload: SolveRequest):
             estimated_cost=estimated_cost,
             fallback_used=fallback_used
         )
+        usage_meta = UsageMetadata(
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            total_tokens=input_tokens + output_tokens,
+            llm_calls=llm_calls,
+            model=model_name,
+            counting_method=token_count_method,
+            solver=solver,
+            processing_time_ms=elapsed_ms,
+            fallback_used=fallback_used
+        )
         return SolveResponse(
             success=False,
             task_type=task_type,
@@ -2311,7 +2451,8 @@ def solve_task(payload: SolveRequest):
             processing_time_ms=elapsed_ms,
             error=str(e),
             solver_details=solver_details,
-            token_usage=token_usage
+            token_usage=token_usage,
+            usage=usage_meta
         )
 
 

@@ -132,10 +132,22 @@ export interface TokenUsage {
   input_tokens: number;
   output_tokens: number;
   total_tokens: number;
-  token_count_method: 'actual' | 'estimated' | 'not_applicable';
+  token_count_method: 'actual' | 'estimated' | 'not_applicable' | 'unavailable';
   processing_time_ms: number;
   estimated_cost?: number | null;
   fallback_used: boolean;
+}
+
+export interface UsageMetadata {
+  input_tokens: number;
+  output_tokens: number;
+  total_tokens: number;
+  llm_calls: number;
+  model?: string | null;
+  counting_method: 'actual' | 'estimated' | 'not_applicable' | 'unavailable';
+  solver?: string;
+  processing_time_ms?: number;
+  fallback_used?: boolean;
 }
 
 export interface SolveResponse {
@@ -149,6 +161,7 @@ export interface SolveResponse {
   solver_details?: SolverDetails;
   memory_rss_mb?: number;
   token_usage?: TokenUsage;
+  usage?: UsageMetadata;
 }
 
 export interface BatchSolveRequest {
@@ -173,6 +186,7 @@ export interface ChatMessage {
   processingTimeMs?: number;
   tokensConsumed?: number;
   tokenUsage?: TokenUsage;
+  usage?: UsageMetadata;
   secondaryResults?: SecondaryResults;
   solverDetails?: SolverDetails;
   rawResponse?: SolveResponse;
@@ -188,6 +202,7 @@ export interface TaskHistoryItem {
   durationMs: number;
   tokens: number;
   tokenUsage?: TokenUsage;
+  usage?: UsageMetadata;
   statusCode: number;
   timestamp: string;
   timeAgo: string;
