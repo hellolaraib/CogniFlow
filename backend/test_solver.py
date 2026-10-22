@@ -21,10 +21,13 @@ Implements Tests A through Q:
 """
 
 import unittest
+import unittest.mock
 import urllib.request
 import urllib.error
 import json
 import re
+import os
+import io
 
 from backend.main import (
     classify_intent,
@@ -593,6 +596,275 @@ class TestTokenUsageTrackingSuite(unittest.TestCase):
         self.assertEqual(total_tokens, 230, "Total tokens must equal exact sum (150 + 80 = 230)")
         self.assertEqual(total_llm_calls, 2, "LLM calls must equal exact sum (1 + 1 = 2)")
         self.assertEqual(zero_token_count, 2, "Zero-token requests must equal 2")
+
+
+class TestGeneralAIFunctionalSuite(unittest.TestCase):
+    """Phase 1: Comprehensive General-Purpose AI Integration Unit Tests.
+    Mocks provider network calls deterministically to verify error handling,
+    conversation context, token ingestion, fallbacks, and zero-token math preservation.
+    """
+
+    def setUp(self):
+        # Save original environment state
+        self._orig_env = dict(os.environ)
+
+    def tearDown(self):
+        # Restore environment
+        os.environ.clear()
+        os.environ.update(self._orig_env)
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_phase1_general_educational_question(self, mock_urlopen):
+        """Test: General educational question routes to AI model with actual token reporting."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+
+        mock_resp = unittest.mock.MagicMock()
+        mock_resp.status = 200
+        mock_payload = {
+            "model": "llama-3.3-70b-versatile",
+            "choices": [{"message": {"role": "assistant", "content": "A binary tree is a hierarchical data structure where each node has at most two children."}}],
+            "usage": {"prompt_tokens": 30, "completion_tokens": 45, "total_tokens": 75}
+        }
+        mock_resp.read.return_value = json.dumps(mock_payload).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        req = SolveRequest(task_type="general_llm", input="Explain the conceptual foundation of binary trees.")
+        res = solve_task(req)
+
+        self.assertTrue(res.success)
+        self.assertIn("binary tree", res.answer.lower())
+        self.assertEqual(res.solver, "general_llm")
+        self.assertEqual(res.usage.input_tokens, 30)
+        self.assertEqual(res.usage.output_tokens, 45)
+        self.assertEqual(res.usage.total_tokens, 75)
+        self.assertEqual(res.usage.counting_method, "actual")
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_phase1_unfamiliar_question(self, mock_urlopen):
+        """Test: Unfamiliar / previously unseen question answered by general AI model."""
+        os.environ["OPENAI_API_KEY"] = "sk-testmockkey999"
+
+        mock_resp = unittest.mock.MagicMock()
+        mock_resp.status = 200
+        mock_payload = {
+            "model": "gpt-4o-mini",
+            "choices": [{"message": {"role": "assistant", "content": "The quantum Zeno effect is a situation in quantum mechanics where an unstable particle never decays while observed."}}],
+            "usage": {"prompt_tokens": 28, "completion_tokens": 52, "total_tokens": 80}
+        }
+        mock_resp.read.return_value = json.dumps(mock_payload).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        req = SolveRequest(task_type="smart", input="What is the quantum Zeno effect in modern quantum physics?")
+        res = solve_task(req)
+
+        self.assertTrue(res.success)
+        self.assertIn("zeno", res.answer.lower())
+        self.assertEqual(res.usage.total_tokens, 80)
+        self.assertEqual(res.usage.counting_method, "actual")
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_phase1_coding_question(self, mock_urlopen):
+        """Test: Open-ended coding question answered dynamically by AI model."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+
+        mock_resp = unittest.mock.MagicMock()
+        mock_resp.status = 200
+        mock_payload = {
+            "model": "llama-3.3-70b-versatile",
+            "choices": [{"message": {"role": "assistant", "content": "```c\nstruct TreeNode* invertTree(struct TreeNode* root) {\n    if (!root) return NULL;\n    struct TreeNode* tmp = root->left;\n    root->left = invertTree(root->right);\n    root->right = invertTree(tmp);\n    return root;\n}\n```"}}],
+            "usage": {"prompt_tokens": 40, "completion_tokens": 90, "total_tokens": 130}
+        }
+        mock_resp.read.return_value = json.dumps(mock_payload).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        req = SolveRequest(task_type="code_gen", input="Write a C function to invert a binary tree.")
+        res = solve_task(req)
+
+        self.assertTrue(res.success)
+        self.assertIn("invertTree", res.answer)
+        self.assertEqual(res.solver, "general_llm")
+        self.assertEqual(res.usage.total_tokens, 130)
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_phase1_follow_up_question_with_context(self, mock_urlopen):
+        """Test: Follow-up question receives and transmits conversation history context."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+
+        captured_requests = []
+
+        def side_effect(req, **kwargs):
+            captured_requests.append(req)
+            resp = unittest.mock.MagicMock()
+            resp.status = 200
+            payload = {
+                "model": "llama-3.3-70b-versatile",
+                "choices": [{"message": {"role": "assistant", "content": "Here is an example in C of the binary tree we discussed."}}],
+                "usage": {"prompt_tokens": 65, "completion_tokens": 35, "total_tokens": 100}
+            }
+            resp.read.return_value = json.dumps(payload).encode("utf-8")
+            cm = unittest.mock.MagicMock()
+            cm.__enter__.return_value = resp
+            return cm
+
+        mock_urlopen.side_effect = side_effect
+
+        history = [
+            {"role": "user", "content": "Explain binary trees."},
+            {"role": "assistant", "content": "A binary tree is a data structure..."},
+            {"role": "user", "content": "Give me an example."}
+        ]
+
+        req = SolveRequest(
+            task_type="general_llm",
+            input="Now write it in C.",
+            conversation_history=history
+        )
+        res = solve_task(req)
+
+        self.assertTrue(res.success)
+        self.assertGreater(len(captured_requests), 0)
+
+        # Inspect payload sent to provider
+        sent_body = json.loads(captured_requests[0].data.decode("utf-8"))
+        sent_messages = sent_body.get("messages", [])
+
+        # Should contain system message + 3 historical turns + 1 current turn = 5 messages
+        self.assertEqual(len(sent_messages), 5)
+        self.assertEqual(sent_messages[1]["content"], "Explain binary trees.")
+        self.assertEqual(sent_messages[-1]["content"], "Now write it in C.")
+
+    def test_phase1_model_unavailable(self):
+        """Test: Model unavailable honestly reported when no provider is configured."""
+        # Ensure no model key is set
+        os.environ.pop("GROQ_API_KEY", None)
+        os.environ.pop("OPENAI_API_KEY", None)
+        os.environ.pop("GEMINI_API_KEY", None)
+        os.environ.pop("AI_API_KEY", None)
+        os.environ["AI_PROVIDER"] = "none"
+
+        req = SolveRequest(task_type="general_llm", input="Can you write a poem about gravity?")
+        res = solve_task(req)
+
+        self.assertFalse(res.success)
+        self.assertIn("unavailable", res.answer.lower())
+        self.assertEqual(res.usage.total_tokens, 0)
+        self.assertEqual(res.usage.counting_method, "unavailable")
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_phase1_invalid_credentials(self, mock_urlopen):
+        """Test: HTTP 401 authentication error gracefully surfaced."""
+        os.environ["GROQ_API_KEY"] = "gsk_invalidbadkey"
+
+        http_err = urllib.error.HTTPError(
+            url="https://api.groq.com/openai/v1/chat/completions",
+            code=401,
+            msg="Unauthorized",
+            hdrs={},
+            fp=io.BytesIO(b'{"error":{"message":"Invalid API key"}}')
+        )
+        mock_urlopen.side_effect = http_err
+
+        req = SolveRequest(task_type="general_llm", input="Hello world")
+        res = solve_task(req)
+
+        self.assertFalse(res.success)
+        self.assertIn("Authentication Error (HTTP 401)", res.answer)
+        self.assertIn("Invalid or missing API key", res.error)
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_phase1_request_timeout(self, mock_urlopen):
+        """Test: Request timeout gracefully handled."""
+        import socket
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+
+        url_err = urllib.error.URLError(socket.timeout("The read operation timed out"))
+        mock_urlopen.side_effect = url_err
+
+        req = SolveRequest(task_type="general_llm", input="Perform complex multi-step reasoning")
+        res = solve_task(req)
+
+        self.assertFalse(res.success)
+        self.assertIn("timed out", res.answer.lower())
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_phase1_provider_reported_token_usage(self, mock_urlopen):
+        """Test: Accurate ingestion of provider-reported input and output tokens."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+
+        mock_resp = unittest.mock.MagicMock()
+        mock_resp.status = 200
+        mock_payload = {
+            "model": "llama-3.3-70b-versatile",
+            "choices": [{"message": {"role": "assistant", "content": "Test answer"}}],
+            "usage": {"prompt_tokens": 142, "completion_tokens": 288, "total_tokens": 430}
+        }
+        mock_resp.read.return_value = json.dumps(mock_payload).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        req = SolveRequest(task_type="general_llm", input="Test prompt")
+        res = solve_task(req)
+
+        self.assertEqual(res.usage.input_tokens, 142)
+        self.assertEqual(res.usage.output_tokens, 288)
+        self.assertEqual(res.usage.total_tokens, 430)
+        self.assertEqual(res.usage.counting_method, "actual")
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_phase1_missing_token_metadata(self, mock_urlopen):
+        """Test: When provider omits usage block, label as estimated rather than 0."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+
+        mock_resp = unittest.mock.MagicMock()
+        mock_resp.status = 200
+        mock_payload = {
+            "model": "llama-3.3-70b-versatile",
+            "choices": [{"message": {"role": "assistant", "content": "This is a detailed generated explanation without provider usage metadata."}}],
+            # usage key omitted
+        }
+        mock_resp.read.return_value = json.dumps(mock_payload).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        req = SolveRequest(task_type="general_llm", input="What is recursion?")
+        res = solve_task(req)
+
+        self.assertTrue(res.success)
+        self.assertGreater(res.usage.total_tokens, 0)
+        self.assertEqual(res.usage.counting_method, "estimated")
+
+    def test_phase1_deterministic_math_zero_llm_calls(self):
+        """Test: Deterministic math must still strictly report 0 LLM calls and 0 LLM tokens."""
+        req = SolveRequest(task_type="math", input="Calculate 125 * 64")
+        res = solve_task(req)
+
+        self.assertTrue(res.success)
+        self.assertIn("8000", res.answer)
+        self.assertEqual(res.usage.total_tokens, 0)
+        self.assertEqual(res.usage.llm_calls, 0)
+        self.assertEqual(res.usage.counting_method, "not_applicable")
+
+    @unittest.mock.patch("urllib.request.urlopen")
+    def test_phase1_retrieval_failure_followed_by_general_model_fallback(self, mock_urlopen):
+        """Test: When retrieval yields no high-confidence match, fall back to general model."""
+        os.environ["GROQ_API_KEY"] = "gsk_testmockkey12345"
+
+        mock_resp = unittest.mock.MagicMock()
+        mock_resp.status = 200
+        mock_payload = {
+            "model": "llama-3.3-70b-versatile",
+            "choices": [{"message": {"role": "assistant", "content": "Distributed actor systems provide asynchronous message passing, location transparency, and fault isolation."}}],
+            "usage": {"prompt_tokens": 50, "completion_tokens": 80, "total_tokens": 130}
+        }
+        mock_resp.read.return_value = json.dumps(mock_payload).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        # Unmatched query that bypasses static dictionary
+        req = SolveRequest(task_type="factual", input="Explain the architectural advantages of distributed actor systems")
+        res = solve_task(req)
+
+        self.assertTrue(res.success)
+        self.assertEqual(res.solver, "general_llm")
+        self.assertEqual(res.usage.total_tokens, 130)
+        self.assertTrue(res.usage.fallback_used)
 
 
 if __name__ == "__main__":

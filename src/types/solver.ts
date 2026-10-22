@@ -7,7 +7,8 @@ export type TaskType =
   | 'code_debug'
   | 'code_gen'
   | 'logical'
-  | 'factual';
+  | 'factual'
+  | 'general_llm';
 
 export interface TaskTypeOption {
   id: TaskType;
@@ -96,6 +97,8 @@ export const TASK_TYPES: TaskTypeOption[] = [
 export interface SolveRequest {
   task_type: TaskType | string;
   input: string;
+  options?: Record<string, any>;
+  conversation_history?: Array<{ role: 'user' | 'assistant'; content: string }>;
 }
 
 export interface SecondaryResults {

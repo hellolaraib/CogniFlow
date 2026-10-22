@@ -77,6 +77,8 @@ export async function solveTask(
       body: JSON.stringify({
         task_type: request.task_type,
         input: trimmedInput,
+        options: request.options,
+        conversation_history: request.conversation_history,
       }),
       signal,
     });

@@ -120,6 +120,15 @@ export function App() {
       timestamp: new Date().toISOString(),
     };
 
+    // Build conversation context from prior successful messages
+    const recentHistory = messages
+      .filter((m) => m.text && !m.error && m.text.trim().length > 0)
+      .slice(-6)
+      .map((m) => ({
+        role: m.sender === 'user' ? ('user' as const) : ('assistant' as const),
+        content: m.text,
+      }));
+
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
 
@@ -127,6 +136,7 @@ export function App() {
       const response = await solveTask({
         task_type: mode,
         input: text,
+        conversation_history: recentHistory,
       });
 
       const assistantMsgId = 'msg_' + Math.random().toString(36).substring(2, 9);

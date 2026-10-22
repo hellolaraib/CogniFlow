@@ -14,6 +14,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from backend.ai_adapter import (
+    query_general_ai_model,
+    check_ai_provider_status,
+    get_ai_config
+)
+
 # Configure development diagnostic logger
 logging.basicConfig(
     level=logging.INFO,
@@ -23,8 +29,8 @@ logger = logging.getLogger("cogniflow.solver")
 
 app = FastAPI(
     title="CogniFlow Solver Backend",
-    version="0.3.0",
-    description="Intelligent deterministic task router and multi-engine solver API"
+    version="0.4.0",
+    description="Intelligent deterministic task router and multi-engine solver API with General AI integration"
 )
 
 # Enable CORS for frontend development
@@ -37,8 +43,10 @@ app.add_middleware(
 )
 
 class SolveRequest(BaseModel):
-    task_type: str
+    task_type: str = "smart"
     input: str
+    options: Optional[Dict[str, Any]] = None
+    conversation_history: Optional[List[Dict[str, str]]] = None
 
 class TokenUsage(BaseModel):
     request_id: str
@@ -90,10 +98,12 @@ class BatchSolveResponse(BaseModel):
 @app.get("/")
 @app.get("/health")
 def health_check():
+    ai_status = check_ai_provider_status()
+    is_cloud_active = ai_status["is_configured"] and ai_status["provider"] != "ollama"
     return {
         "status": "ok",
         "service": "CogniFlow Solver Engine",
-        "version": "0.3.0",
+        "version": "0.4.0",
         "registered_engines": [
             "01_math",
             "02_sentiment",
@@ -102,9 +112,10 @@ def health_check():
             "05_code_gen",
             "06_summarization",
             "07_logical",
-            "08_factual"
+            "08_factual",
+            "09_general_llm"
         ],
-        "active_solvers": 8,
+        "active_solvers": 9,
         "solver_health": {
             "01_math": "operational",
             "02_sentiment": "operational",
@@ -113,17 +124,23 @@ def health_check():
             "05_code_gen": "operational",
             "06_summarization": "operational",
             "07_logical": "operational",
-            "08_factual": "operational"
+            "08_factual": "operational",
+            "09_general_llm": ai_status["status"]
         },
+        "general_llm": ai_status,
         "local_llm": {
-            "configured": False,
-            "status": "unavailable",
-            "detail": "No local daemon on port 11434; zero-token deterministic and heuristic engines active"
+            "configured": ai_status["provider"] == "ollama",
+            "status": "operational" if ai_status["provider"] == "ollama" else "unavailable",
+            "detail": ai_status["detail"]
         },
         "paid_cloud_api": {
-            "configured": False,
-            "status": "not_configured",
-            "detail": "Rule 6: Paid cloud APIs disabled; all computation local and zero-cost"
+            "configured": is_cloud_active,
+            "status": "operational" if is_cloud_active else "not_configured",
+            "detail": (
+                f"Active provider: {ai_status['display_name']}"
+                if is_cloud_active
+                else "Configurable via GROQ_API_KEY, OPENAI_API_KEY, or GEMINI_API_KEY in .env"
+            )
         }
     }
 
@@ -1867,26 +1884,36 @@ def score_hit_relevance(hit_title: str, snippet: str, query_tokens: List[str], c
 
     # Exact normalized phrase match in title -> Maximum confidence
     if clean_query.lower() in title_lower:
-        return 1.0
+        base_score = 1.0
+    else:
+        # Query tokens overlap in title
+        title_tokens = set(re.findall(r"\b[a-zA-Z0-9_-]+\b", title_lower))
+        matched_title_tokens = [t for t in query_tokens if t in title_tokens]
+        title_ratio = len(matched_title_tokens) / max(1, len(query_tokens))
 
-    # Query tokens overlap in title
-    title_tokens = set(re.findall(r"\b[a-zA-Z0-9_-]+\b", title_lower))
-    matched_title_tokens = [t for t in query_tokens if t in title_tokens]
-    title_ratio = len(matched_title_tokens) / max(1, len(query_tokens))
+        # Query tokens overlap in snippet
+        snippet_tokens = set(re.findall(r"\b[a-zA-Z0-9_-]+\b", snippet_clean))
+        matched_snippet_tokens = [t for t in query_tokens if t in snippet_tokens]
+        snippet_ratio = len(matched_snippet_tokens) / max(1, len(query_tokens))
 
-    # Query tokens overlap in snippet
-    snippet_tokens = set(re.findall(r"\b[a-zA-Z0-9_-]+\b", snippet_clean))
-    matched_snippet_tokens = [t for t in query_tokens if t in snippet_tokens]
-    snippet_ratio = len(matched_snippet_tokens) / max(1, len(query_tokens))
+        # Weighted composite score: Title 70%, snippet 30%
+        base_score = round(0.7 * title_ratio + 0.3 * snippet_ratio, 3)
 
-    # Weighted composite score: Title 70%, snippet 30%
-    return round(0.7 * title_ratio + 0.3 * snippet_ratio, 3)
+    # Penalize candidate titles with modifiers not requested in the query
+    # e.g., "Deputy Prime Minister" when query is "Prime Minister of India"
+    title_tokens_list = [w.lower() for w in re.findall(r"\b[a-zA-Z0-9_-]+\b", title_lower)]
+    unrequested_modifiers = {"deputy", "spouse", "list", "named", "former", "acting", "memorial"}
+    for mod in unrequested_modifiers:
+        if mod in title_tokens_list and mod not in query_tokens:
+            base_score = max(0.0, round(base_score - 0.25, 3))
+
+    return base_score
 
 
 def fetch_online_knowledge(query: str) -> Optional[Dict[str, Any]]:
     """Fetches verified reference knowledge from Wikipedia API with strict relevance validation."""
     clean = re.sub(
-        r"(?i)\b(what is the|what is a|what is|who is the|who is|who was|tell me about|tell me how|tell me what|tell me why|tell me|real name of|real name|meaning of|definition of|can you tell me|can you explain|could you explain|please explain|explain me|explain to me|explain a|explain the|explain|describe to me|describe a|describe the|describe|teach me about|teach me|overview of|details of|in details|in detail|with details|step by step|do you know)\b",
+        r"(?i)\b(what is the|what is a|what is|who is the|who is|who was|tell me about|tell me how|tell me what|tell me why|tell me who is|tell me the name of|tell me name of|tell me|name of the|name of|real name of|real name|meaning of|definition of|can you tell me|can you explain|could you explain|please explain|explain me|explain to me|explain a|explain the|explain|describe to me|describe a|describe the|describe|teach me about|teach me|overview of|details of|in details|in detail|with details|step by step|do you know)\b",
         "",
         query
     ).strip()
@@ -1939,7 +1966,7 @@ def fetch_online_knowledge(query: str) -> Optional[Dict[str, Any]]:
                     h_snippet = hit.get("snippet", "")
                     score = score_hit_relevance(h_title, h_snippet, query_tokens, clean)
                     logger.info(f"[Retrieval Candidate] hit_id={hit.get('pageid')} | title='{h_title}' | score={score:.3f}")
-                    if score > best_score:
+                    if score > best_score or (score == best_score and best_hit and len(h_title) < len(best_hit.get("title", ""))):
                         best_score = score
                         best_hit = hit
 
@@ -2124,7 +2151,25 @@ def solve_factual(query: str) -> Dict[str, Any]:
         logger.info(f"[Factual Solver] Resolved via Live Knowledge Engine (Wikipedia API)")
         return online_res
 
-    # 5b. Local LLM Fallback (if Ollama/llama.cpp is running locally)
+    # 5b. General-Purpose AI Model (Groq, OpenAI, Gemini, Ollama)
+    ai_cfg = get_ai_config()
+    if ai_cfg.is_configured:
+        ai_res = query_general_ai_model(query)
+        if ai_res.get("success"):
+            logger.info(f"[Factual Solver] Resolved via General AI Model fallback ({ai_res.get('model')})")
+            return {
+                "answer": ai_res["answer"],
+                "engine": ai_res["engine"],
+                "fallback_used": True,
+                "is_llm": True,
+                "prompt_tokens": ai_res["prompt_tokens"],
+                "completion_tokens": ai_res["completion_tokens"],
+                "total_tokens": ai_res["total_tokens"],
+                "model": ai_res["model"],
+                "counting_method": ai_res["counting_method"]
+            }
+
+    # 5c. Local LLM Fallback (if Ollama/llama.cpp legacy probe succeeds)
     local_llm_res = query_local_llm_if_available(query)
     if local_llm_res:
         logger.info(f"[Factual Solver] Resolved via Local LLM fallback ({local_llm_res.get('model')})")
@@ -2253,6 +2298,8 @@ def solve_task(payload: SolveRequest):
     token_count_method = "not_applicable"
     estimated_cost: Optional[float] = 0.0
     fallback_used = False
+    task_success = True
+    task_error: Optional[str] = None
 
     secondary_results: Dict[str, Any] = {}
     solver_details: Dict[str, Any] = {
@@ -2266,11 +2313,28 @@ def solve_task(payload: SolveRequest):
         if task_type == "math":
             solver = "python"
             res = solve_math_query(raw_input)
-            answer = res["answer"]
-            solver_details["engine"] = res.get("engine", "SymPy / AST Evaluator")
-            secondary_results = res.get("secondary", {})
-            solver_details["deterministic"] = True
-            solver_details["tokens_consumed"] = 0
+            if res.get("answer"):
+                answer = res["answer"]
+                solver_details["engine"] = res.get("engine", "SymPy / AST Evaluator")
+                secondary_results = res.get("secondary", {})
+                solver_details["deterministic"] = True
+                solver_details["tokens_consumed"] = 0
+            else:
+                ai_cfg = get_ai_config()
+                if ai_cfg.is_configured:
+                    ai_res = query_general_ai_model(raw_input, conversation_history=payload.conversation_history)
+                    if ai_res.get("success"):
+                        solver = "general_llm"
+                        answer = ai_res["answer"]
+                        model_name = ai_res.get("model")
+                        solver_details["engine"] = ai_res.get("engine")
+                        solver_details["deterministic"] = False
+                        llm_calls = 1
+                        input_tokens = ai_res.get("prompt_tokens", 0)
+                        output_tokens = ai_res.get("completion_tokens", 0)
+                        token_count_method = ai_res.get("counting_method", "actual")
+                        solver_details["tokens_consumed"] = input_tokens + output_tokens
+                        fallback_used = True
 
         # ENGINE 02: SENTIMENT CLASSIFICATION
         elif task_type == "sentiment":
@@ -2303,21 +2367,53 @@ def solve_task(payload: SolveRequest):
 
         # ENGINE 05: CODE GENERATION
         elif task_type == "code_gen":
-            solver = "code_model"
-            res = generate_code(raw_input)
-            answer = res["answer"]
-            solver_details["engine"] = res.get("engine", "Local Code Generator")
-            solver_details["deterministic"] = False
-
-            # Model token tracking
-            in_tok = max(1, len(raw_input.split()) * 4 // 3)
-            out_tok = max(1, len(answer.split()) * 4 // 3)
-            llm_calls = 1
-            input_tokens = in_tok
-            output_tokens = out_tok
-            token_count_method = "estimated"
-            model_name = "CogniFlow Local Code Engine"
-            solver_details["tokens_consumed"] = in_tok + out_tok
+            ai_cfg = get_ai_config()
+            if ai_cfg.is_configured:
+                ai_res = query_general_ai_model(
+                    raw_input,
+                    conversation_history=payload.conversation_history,
+                    system_prompt="You are CogniFlow Code Assistant. Provide clean, correct, well-structured, executable code with concise technical explanations."
+                )
+                if ai_res.get("success"):
+                    solver = "general_llm"
+                    answer = ai_res["answer"]
+                    model_name = ai_res.get("model")
+                    solver_details["engine"] = ai_res.get("engine")
+                    solver_details["deterministic"] = False
+                    llm_calls = 1
+                    input_tokens = ai_res.get("prompt_tokens", 0)
+                    output_tokens = ai_res.get("completion_tokens", 0)
+                    token_count_method = ai_res.get("counting_method", "actual")
+                    solver_details["tokens_consumed"] = input_tokens + output_tokens
+                else:
+                    # Fallback to local heuristic code template engine
+                    solver = "code_model"
+                    res = generate_code(raw_input)
+                    answer = res["answer"]
+                    solver_details["engine"] = res.get("engine", "Local Code Generator")
+                    solver_details["deterministic"] = False
+                    in_tok = max(1, len(raw_input.split()) * 4 // 3)
+                    out_tok = max(1, len(answer.split()) * 4 // 3)
+                    llm_calls = 1
+                    input_tokens = in_tok
+                    output_tokens = out_tok
+                    token_count_method = "estimated"
+                    model_name = "CogniFlow Local Code Engine"
+                    solver_details["tokens_consumed"] = in_tok + out_tok
+            else:
+                solver = "code_model"
+                res = generate_code(raw_input)
+                answer = res["answer"]
+                solver_details["engine"] = res.get("engine", "Local Code Generator")
+                solver_details["deterministic"] = False
+                in_tok = max(1, len(raw_input.split()) * 4 // 3)
+                out_tok = max(1, len(answer.split()) * 4 // 3)
+                llm_calls = 1
+                input_tokens = in_tok
+                output_tokens = out_tok
+                token_count_method = "estimated"
+                model_name = "CogniFlow Local Code Engine"
+                solver_details["tokens_consumed"] = in_tok + out_tok
 
         # ENGINE 06: SUMMARIZATION
         elif task_type == "summarization":
@@ -2347,11 +2443,11 @@ def solve_task(payload: SolveRequest):
             fallback_used = bool(res.get("fallback_used", False))
 
             if res.get("is_llm"):
-                solver = "local_llm"
+                solver = "general_llm" if ("General AI" in str(res.get("engine")) or "Cloud" in str(res.get("engine"))) else "local_llm"
                 llm_calls = 1
                 input_tokens = res.get("prompt_tokens", 0)
                 output_tokens = res.get("completion_tokens", 0)
-                model_name = res.get("model", "Local LLM")
+                model_name = res.get("model", "General AI Model")
                 token_count_method = res.get("counting_method", "actual")
                 solver_details["deterministic"] = False
                 solver_details["tokens_consumed"] = input_tokens + output_tokens
@@ -2359,12 +2455,50 @@ def solve_task(payload: SolveRequest):
                 solver_details["deterministic"] = True
                 solver_details["tokens_consumed"] = 0
 
+        # ENGINE 09: GENERAL-PURPOSE AI MODEL (Conversational, Open-Ended, Reasoning, Follow-ups)
+        elif task_type in ["general_llm", "general", "chat", "llm"]:
+            solver = "general_llm"
+            ai_res = query_general_ai_model(raw_input, conversation_history=payload.conversation_history)
+            answer = ai_res["answer"]
+            model_name = ai_res.get("model")
+            solver_details["engine"] = ai_res.get("engine", "General AI Model")
+            solver_details["deterministic"] = False
+            llm_calls = 1 if ai_res.get("success") else 0
+            input_tokens = ai_res.get("prompt_tokens", 0)
+            output_tokens = ai_res.get("completion_tokens", 0)
+            token_count_method = ai_res.get("counting_method", "unavailable")
+            solver_details["tokens_consumed"] = input_tokens + output_tokens
+            fallback_used = ai_res.get("fallback_used", False)
+            if not ai_res.get("success"):
+                task_success = False
+                task_error = ai_res.get("error")
+                solver_details["error"] = ai_res.get("error")
+
         else:
-            answer = f"Processed input for task mode `{task_type}`: '{raw_input}'"
-            solver = "python"
-            solver_details["engine"] = "CogniFlow Deterministic Kernel"
-            solver_details["deterministic"] = True
-            solver_details["tokens_consumed"] = 0
+            # Fallback for unrecognized task types or open-ended user requests
+            ai_cfg = get_ai_config()
+            if ai_cfg.is_configured:
+                solver = "general_llm"
+                ai_res = query_general_ai_model(raw_input, conversation_history=payload.conversation_history)
+                answer = ai_res["answer"]
+                model_name = ai_res.get("model")
+                solver_details["engine"] = ai_res.get("engine")
+                solver_details["deterministic"] = False
+                llm_calls = 1 if ai_res.get("success") else 0
+                input_tokens = ai_res.get("prompt_tokens", 0)
+                output_tokens = ai_res.get("completion_tokens", 0)
+                token_count_method = ai_res.get("counting_method", "unavailable")
+                solver_details["tokens_consumed"] = input_tokens + output_tokens
+                if not ai_res.get("success"):
+                    task_success = False
+                    task_error = ai_res.get("error")
+                    solver_details["error"] = ai_res.get("error")
+            else:
+                answer = f"Processed input for task mode `{task_type}`: '{raw_input}'"
+                solver = "python"
+                solver_details["engine"] = "CogniFlow Deterministic Kernel"
+                solver_details["deterministic"] = True
+                solver_details["tokens_consumed"] = 0
 
         elapsed_ms = round((time.perf_counter() - start_time) * 1000, 2)
         if elapsed_ms < 0.1:
@@ -2399,16 +2533,16 @@ def solve_task(payload: SolveRequest):
 
         logger.info(
             f"[Task Execution] request_id='{request_id}' | task_type='{task_type}' | solver='{solver}' | "
-            f"engine='{solver_details.get('engine')}' | elapsed_ms={elapsed_ms} | total_tokens={total_tokens} | success=True"
+            f"engine='{solver_details.get('engine')}' | elapsed_ms={elapsed_ms} | total_tokens={total_tokens} | success={task_success}"
         )
 
         return SolveResponse(
-            success=True,
+            success=task_success,
             task_type=task_type,
             answer=answer,
             solver=solver,
             processing_time_ms=elapsed_ms,
-            error=None,
+            error=task_error,
             secondary_results=secondary_results,
             solver_details=solver_details,
             memory_rss_mb=14.2,
